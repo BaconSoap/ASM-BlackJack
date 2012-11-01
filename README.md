@@ -7,7 +7,7 @@ Team Members
 Andreas
 Andrew
 Jarad
-Joe
+Joe :3
 
 Docs
 ----
