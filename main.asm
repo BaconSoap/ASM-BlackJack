@@ -1,47 +1,20 @@
-TITLE MASM Template						(main.asm)
+TITLE Blackjack						(main.asm)
 
 ; Description:
 ; 
-; Revision date:
+; Revision date: 11/3/12
 
 INCLUDE Irvine32.inc
 
 .data
-Instruction DB "Enter a number", 0DH, 0AH, 0
-EaxPrint DB "First number is now", 0DH, 0AH, 0
-EbxPrint DB "Second number is now", 0DH, 0AH, 0
-arrayal DB 50 DUP(?)
 
 .code
 main PROC
 	call Clrscr
 	call ClearRegs
-	mov edx, OFFSET Instruction
-	CALL WriteString
-	CALL ReadInt
-	MOV ECX, EAX
-	mov edx, offset Instruction
-	CALL WriteString
-	CALL READINT
-	MOV ESI, EAX
-	CALL ExchangeNow
-	MOV EAX, ECX
-	mov edx, offset EaxPrint
-	CALL WriteString
-	call WriteInt
-	call CrLf
-	mov eax, ESI
-	mov edx, offset EbxPrint
-	CALL WriteString
-	call WriteInt
-	call crlf
+
 	exit
 main ENDP
-
-ExchangeNow PROC
-	xchg ECX, ESI
-	ret
-ExchangeNow ENDP
 
 ClearRegs PROC
 	
