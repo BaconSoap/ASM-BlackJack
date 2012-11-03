@@ -28,4 +28,44 @@ ClearRegs PROC
 	ret
 ClearRegs ENDP
 
+GetNamesOfPlayers PROC
+	RET
+GetNamesOfPlayers ENDP
+
+GetNumberOfPlayers PROC
+	RET
+GetNumberOfPlayers ENDP
+
+GiveStartingMoney PROC
+	RET
+GiveStartingMoney ENDP
+
+ShuffleDeck PROC
+	RET
+ShuffleDeck ENDP
+
+TakeBets PROC
+	RET
+TakeBets ENDP
+
+DealHands PROC
+	RET
+DealHands ENDP
+
+TakeTurns PROC
+	RET
+TakeTurns ENDP
+
+HitPlayer PROC
+	RET
+HitPlayer ENDP
+
+StandPlayer PROC
+	RET
+StandPlayer ENDP
+
+DrawCard PROC
+	RET
+DrawCard ENDP
+
 END main
