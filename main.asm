@@ -5,14 +5,17 @@ TITLE Blackjack						(main.asm)
 ; Revision date: 11/3/12
 
 INCLUDE Irvine32.inc
-
-.data
+INCLUDE Deck.inc
 
 .code
 main PROC
 	call Clrscr
 	call ClearRegs
+	CALL InitializeDeck
+	
+	CALL TestDeck
 
+	CALL CrLf
 	exit
 main ENDP
 
