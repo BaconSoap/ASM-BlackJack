@@ -61,6 +61,13 @@
   <ItemGroup>
     <MASM Include="main.asm" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Deck.inc" />
+    <None Include="Game.inc" />
+    <None Include="Graphics.inc" />
+    <None Include="Hand.inc" />
+    <None Include="Player.inc" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
