@@ -7,10 +7,10 @@ ASM-BlackJack
 Team Members
 ------------
 
-Andreas
-Andrew
-Jarad
-Joe :3
+* Andreas
+* Andrew
+* Jarad
+* Joe :3
 
 Docs
 ----
