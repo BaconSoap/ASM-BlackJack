@@ -1,9 +1,8 @@
 ;Deck Procedures
 
-CARD_COUNT = 52
-
 .data
 Deck DB CARD_COUNT DUP (?)
+Discard DB CARD_COUNT DUP(?)
 CardDisplayString DB "10 S", 0, 0
 
 ;Test various deck procedures
@@ -150,7 +149,7 @@ GetCardDisplay PROC USES EBX ESI ECX
 
 	;Format display of the card suit
 	SetSuit:
-	MOV AL, " "
+	MOV AL, 9
 	MOV [ESI], AL
 	INC ESI
 

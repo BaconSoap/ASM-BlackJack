@@ -4,20 +4,45 @@ TITLE Blackjack						(main.asm)
 ; 
 ; Revision date: 11/3/12
 
+HAND_SIZE = 11
+CARD_COUNT = 52
+
 INCLUDE Irvine32.inc
 INCLUDE Deck.inc
+INCLUDE Hand.inc
+INCLUDE Player.inc
+INCLUDE Graphics.inc
+INCLUDE Game.inc
 
+.data
+
+HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
+CardBuffer DB 52 ;CardBuffer will hold a single card
+PlayerCount DB 0
 .code
+
 main PROC
 	call Clrscr
 	call ClearRegs
-	CALL InitializeDeck
+	
+	CALL InitGame
 	
 	CALL TestDeck
+
+	CALL GameLoop
 
 	CALL CrLf
 	exit
 main ENDP
+
+InitGame PROC
+	CALL InitializeDeck
+	RET
+InitGame ENDP
+
+GameLoop PROC
+	RET
+GameLoop ENDP
 
 ClearRegs PROC
 	
