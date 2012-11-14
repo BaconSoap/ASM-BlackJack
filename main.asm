@@ -13,6 +13,7 @@ INCLUDE Hand.inc
 INCLUDE Player.inc
 INCLUDE Graphics.inc
 INCLUDE Game.inc
+INCLUDE help.inc
 
 .data
 

@@ -66,6 +66,7 @@
     <None Include="Game.inc" />
     <None Include="Graphics.inc" />
     <None Include="Hand.inc" />
+    <None Include="help.inc" />
     <None Include="Player.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
