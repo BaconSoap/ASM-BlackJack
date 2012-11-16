@@ -185,3 +185,34 @@ GetCardDisplay PROC USES EBX ESI ECX
 	MOV [ESI], AL
 	RET
 GetCardDisplay ENDP
+
+;-----------------------------------
+; pass offset of deck using ESI
+; returns shuffled deck in ESI
+
+ShuffleDeck PROC USES EAX EBX ECX ESI edi
+	MOV EAX, 0
+	MOV EBX, 0
+	MOV ECX, 52
+
+	S:
+		MOV ESI, OFFSET Deck
+		add ESI, ECX
+		DEC ESI
+
+		MOV EAX, ECX
+		CALL RandomRange
+		MOV EDI, OFFSET Deck
+		ADD EDI, EAX
+	
+		MOV bl, [ESI]
+		MOV bh, [EDI]
+		xchg bh,bl
+		MOV [ESI], bl
+		MOV [EDI], bh
+
+
+	loop S
+	
+	ret
+ShuffleDeck ENDP

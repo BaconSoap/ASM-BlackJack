@@ -19,15 +19,17 @@ INCLUDE help.inc
 
 HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
 CardBuffer DB 52 ;CardBuffer will hold a single card
-PlayerCount DB 0
+;PlayerCount DB 0
 .code
 
 main PROC
+	call randomize
+
 	call Clrscr
 	call ClearRegs
 	
 	CALL InitGame
-	
+	call shuffledeck
 	CALL TestDeck
 
 	CALL GameLoop
@@ -68,10 +70,6 @@ GetNumberOfPlayers ENDP
 GiveStartingMoney PROC
 	RET
 GiveStartingMoney ENDP
-
-ShuffleDeck PROC
-	RET
-ShuffleDeck ENDP
 
 TakeBets PROC
 	RET
