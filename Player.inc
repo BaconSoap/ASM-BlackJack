@@ -15,6 +15,13 @@
 
 testPlayer PROC
 	call nameInput
+	call outputPlayers
+	
+
+	RET
+testPlayer ENDP
+
+outputPlayers PROC
 	mov eax, 1
 	mov ecx, playerCount
 	outloop:
@@ -22,19 +29,8 @@ testPlayer PROC
 		inc eax
 	loop outloop
 
-	mov eax, 3
-	mov ebx, 50
-	call inputbet
-	call display
-	call doubleBet
-	call display
-	call winBet
-	call Crlf
-	mov eax, 3
-	call display
-
 	RET
-testPlayer ENDP
+outputPlayers ENDP
 
 ;Start of game input number of players and names of each
 nameInput PROC USES EAX EBX ECX EDX
@@ -201,9 +197,23 @@ removefrombank:
 	RET
 withdrawl ENDP
 
+.data
+	betPrompt BYTE "Enter the bet for player ", 0
+	betPrompt2 BYTE ": ", 0
 
-;pass player number in EAX and bet amount in EBX
-inputBet PROC
+.code
+;pass player number in EAX
+inputBet PROC USES ECX EDX ESI
+	mov edx, offset betprompt
+	call writeString
+	call writeDec
+	mov edx, offset betprompt2
+	call writeString
+	push eax
+	call readInt
+	mov ebx, eax
+	pop eax
+
 	mov esi, offset bet
 
 	cmp eax, 1

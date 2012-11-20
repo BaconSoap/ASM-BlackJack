@@ -37,3 +37,8 @@ SetDealerHand PROC USES EAX ESI EDI ECX
 	JE StartCopy
 	RET
 SetDealerHand ENDP
+
+getHandValue PROC
+
+	RET
+getHandValue ENDP

@@ -216,3 +216,9 @@ ShuffleDeck PROC USES EAX EBX ECX ESI edi
 	
 	ret
 ShuffleDeck ENDP
+
+
+dealCard PROC
+
+	RET
+dealCard ENDP

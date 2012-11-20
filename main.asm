@@ -37,7 +37,9 @@ main PROC
 	CALL CrLf
 
 	;call testHelp
-	;call testPlayer
+	call testPlayer
+	call takebets
+	call outputPlayers
 
 	exit
 main ENDP
@@ -63,19 +65,18 @@ ClearRegs PROC
 	ret
 ClearRegs ENDP
 
-GetNamesOfPlayers PROC
+GetPlayers PROC
+	call nameInput
 	RET
-GetNamesOfPlayers ENDP
+GetPlayers ENDP
 
-GetNumberOfPlayers PROC
-	RET
-GetNumberOfPlayers ENDP
-
-GiveStartingMoney PROC
-	RET
-GiveStartingMoney ENDP
-
-TakeBets PROC
+TakeBets PROC USES EAX ECX
+	mov eax, 1
+	mov ecx, playercount
+	betLoop:
+		call inputBet
+		inc eax
+	loop betLoop
 	RET
 TakeBets ENDP
 
@@ -88,14 +89,18 @@ TakeTurns PROC
 TakeTurns ENDP
 
 HitPlayer PROC
+	call dealCard
+
 	RET
 HitPlayer ENDP
 
 StandPlayer PROC
+	
 	RET
 StandPlayer ENDP
 
 DrawCard PROC
+	
 	RET
 DrawCard ENDP
 

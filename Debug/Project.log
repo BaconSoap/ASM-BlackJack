@@ -1,22 +1,22 @@
-﻿Build started 11/20/2012 9:06:47 AM.
-     1>Project "C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Project.vcxproj" on node 2 (build target(s)).
+﻿Build started 11/20/2012 5:50:36 PM.
+     1>Project "C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Project.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Project.unsuccessfulbuild" because "AlwaysCreate" was specified.
        _MASM:
          Assembling [Inputs]...
-         cmd.exe /C "C:\Users\kohlj\AppData\Local\Temp\ba4575974a4840d48a017d6be2dcdd81.cmd"
+         cmd.exe /C "C:\Users\Jarad\AppData\Local\Temp\f7e92d8824fa4363b68a34e208182c8b.cmd"
          ml.exe /c /nologo /Zi /Fo"Debug\main.obj" /I "c:\Irvine" /W3 /errorReport:prompt  /Tamain.asm
        Link:
-         c:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Debug\Project.exe" /NOLOGO /LIBPATH:c:\Irvine user32.lib irvine32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Project.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Debug\Project.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Debug\Project.lib" /MACHINE:X86 Debug\main.obj
-         LINK : C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Debug\Project.exe not found or not built by the last incremental link; performing full link
-         Project.vcxproj -> C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Debug\Project.exe
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Debug\Project.exe" /NOLOGO /LIBPATH:c:\Irvine user32.lib irvine32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Project.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Debug\Project.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE:NO /IMPLIB:"C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Debug\Project.lib" /MACHINE:X86 Debug\main.obj
+         LINK : C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Debug\Project.exe not found or not built by the last incremental link; performing full link
+         Project.vcxproj -> C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Debug\Project.exe
        Manifest:
-         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Debug\Project.exe;#1" /manifest Debug\Project.exe.intermediate.manifest
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /outputresource:"C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Debug\Project.exe;#1" /manifest Debug\Project.exe.intermediate.manifest
        FinalizeBuildStatus:
          Deleting file "Debug\Project.unsuccessfulbuild".
          Touching "Debug\Project.lastbuildstate".
-     1>Done Building Project "C:\Users\kohlj\Documents\GitHub\ASM-BlackJack\Project.vcxproj" (build target(s)).
+     1>Done Building Project "C:\Users\Jarad\Documents\GitHub\ASM-BlackJack\Project.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.90
+Time Elapsed 00:00:00.92
