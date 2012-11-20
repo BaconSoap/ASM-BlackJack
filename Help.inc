@@ -85,6 +85,31 @@ Once bets are placed a full 52 card deck is shuffled and dealt to the remaining 
 
 .code
 
+testHelp PROC
+	mov ecx, 10
+	hintloop:
+		mov edx, offset card1Prompt
+		call WriteString
+		call readInt
+		mov card1, eax
+
+		mov edx, offset card2Prompt
+		call WriteString
+		call readInt
+		mov card2, eax
+
+		mov edx, offset dealerPrompt
+		call WriteString
+		call readInt
+		mov dealerCard, eax
+		call Crlf
+	
+		call hint
+	loop hintloop
+
+	RET
+testHelp ENDP
+
 hint PROC USES EAX EBX
 	mov eax, card1
 	mov ebx, card2

@@ -35,6 +35,10 @@ main PROC
 	CALL GameLoop
 
 	CALL CrLf
+
+	;call testHelp
+	;call testPlayer
+
 	exit
 main ENDP
 

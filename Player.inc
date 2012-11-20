@@ -13,6 +13,29 @@
 
 .code
 
+testPlayer PROC
+	call nameInput
+	mov eax, 1
+	mov ecx, playerCount
+	outloop:
+		call display
+		inc eax
+	loop outloop
+
+	mov eax, 3
+	mov ebx, 50
+	call inputbet
+	call display
+	call doubleBet
+	call display
+	call winBet
+	call Crlf
+	mov eax, 3
+	call display
+
+	RET
+testPlayer ENDP
+
 ;Start of game input number of players and names of each
 nameInput PROC USES EAX EBX ECX EDX
 	mov edx, offset countPrompt
