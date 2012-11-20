@@ -4,6 +4,7 @@
 Deck DB CARD_COUNT DUP (?)
 Discard DB CARD_COUNT DUP(?)
 CardDisplayString DB "10 S", 0, 0
+topCard DB ?
 
 ;Test various deck procedures
 .CODE
@@ -26,7 +27,21 @@ TestDeck PROC
 	RET
 TestDeck ENDP
 
+testDeal PROC
+	mov ecx, 10
+	deal10:
+		call dealCard
+		call getCardDisplay
+		MOV EDX, OFFSET CardDisplayString
+		CALL WriteString
+		call crlf
+	loop deal10
+
+	RET
+testDeal ENDP
+
 InitializeDeck PROC USES ECX ESI
+	MOV topCard, 0
 	MOV ECX, 0
 	MOV ESI, OFFSET Deck
 
@@ -217,8 +232,15 @@ ShuffleDeck PROC USES EAX EBX ECX ESI edi
 	ret
 ShuffleDeck ENDP
 
-
-dealCard PROC
-
+;returns card in position topCard in EAX 
+;inc topCard to move through the deck
+dealCard PROC USES EBX ESI
+	mov esi, offset Deck
+	mov ebx, 0
+	mov bl, topCard
+	add esi, ebx
+	mov eax, 0
+	mov al, [esi]
+	inc topCard
 	RET
 dealCard ENDP

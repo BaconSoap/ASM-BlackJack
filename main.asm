@@ -36,10 +36,13 @@ main PROC
 
 	CALL CrLf
 
+	call testDeal
+	
 	;call testHelp
-	call testPlayer
-	call takebets
-	call outputPlayers
+	;call testPlayer
+	;call takebets
+	;call outputPlayers
+	call crlf
 
 	exit
 main ENDP
