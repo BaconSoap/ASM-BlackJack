@@ -19,7 +19,6 @@ INCLUDE help.inc
 
 HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
 CardBuffer DB 52 ;CardBuffer will hold a single card
-;PlayerCount DB 0
 .code
 
 main PROC
@@ -36,7 +35,9 @@ main PROC
 
 	CALL CrLf
 
-	call testDeal
+	;call testDeal
+
+	call testHand
 	
 	;call testHelp
 	;call testPlayer
@@ -83,11 +84,29 @@ TakeBets PROC USES EAX ECX
 	RET
 TakeBets ENDP
 
-DealHands PROC
+DealHands PROC USES ECX EBX EAX
+	mov ecx, 2
+	D:
+	mov ebx, 1
+	fillHands:
+		call dealCard
+		xchg eax, ebx
+		;eax player number ebx card
+		call addCardPlayer
+		mov ebx, eax
+		inc ebx 
+	cmp ebx, playerCount
+	JBE fillHands
+
+	call dealCard
+	;call addCardDealer
+	loop D
+
 	RET
 DealHands ENDP
 
 TakeTurns PROC
+
 	RET
 TakeTurns ENDP
 
@@ -106,5 +125,10 @@ DrawCard PROC
 	
 	RET
 DrawCard ENDP
+
+evaluateHand PROC
+
+	RET
+evaluateHand ENDP
 
 END main

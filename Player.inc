@@ -94,31 +94,31 @@ nameInput ENDP
 display PROC USES EBX ECX EDX ESI
 
 	cmp eax, 1
-	JE inName1
+	JE outName1
 	cmp eax, 2
-	JE inName2
+	JE outName2
 	cmp eax, 3
-	JE inName3
+	JE outName3
 	cmp eax, 4
-	JE inName4
+	JE outName4
 	cmp eax, 5
-	JE inName5
+	JE outName5
 
-	inName1:
+	outName1:
 		mov edx, offset name1
 		mov esi, offset banks
 		push eax
 		jmp outputPlayer
-	inName2:
+	outName2:
 		mov edx, offset name2
 		jmp switchend
-	inName3:
+	outName3:
 		mov edx, offset name3
 		jmp switchend
-	inName4:
+	outName4:
 		mov edx, offset name4
 		jmp switchend
-	inName5:
+	outName5:
 		mov edx, offset name5
 		jmp switchend
 

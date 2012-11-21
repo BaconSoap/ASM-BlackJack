@@ -4,7 +4,7 @@
 Deck DB CARD_COUNT DUP (?)
 Discard DB CARD_COUNT DUP(?)
 CardDisplayString DB "10 S", 0, 0
-topCard DB ?
+topCard DB 0
 
 ;Test various deck procedures
 .CODE
@@ -206,6 +206,7 @@ GetCardDisplay ENDP
 ; returns shuffled deck in ESI
 
 ShuffleDeck PROC USES EAX EBX ECX ESI edi
+	MOV topCard, 0
 	MOV EAX, 0
 	MOV EBX, 0
 	MOV ECX, 52
