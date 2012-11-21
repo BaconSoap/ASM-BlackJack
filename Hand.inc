@@ -11,7 +11,7 @@ player5Hand DB HAND_SIZE DUP(52)
 
 testHand PROC
 	mov eax, 1
-	mov ecx, 10
+	mov ecx, 2
 	dealLoop:
 		push eax
 		call dealCard
@@ -20,7 +20,8 @@ testHand PROC
 		call addcardPlayer
 	loop dealLoop
 
-	mov esi, offset player1Hand
+	call getPlayerHand
+	mov esi, offset handBuffer
 
 testit:
 	mov eax, 0
@@ -74,74 +75,171 @@ SetDealerHand PROC USES EAX ESI EDI ECX
 	RET
 SetDealerHand ENDP
 
-
-;pass player number in EAX and card in EBX
-addCardPlayer PROC USES ECX ESI
+;pass player number in EAX places that players hand into handbuffer
+getPlayerHand PROC USES ECX ESI EDI
+	mov ecx, 0
+	mov edi, offset handBuffer
 
 	cmp eax, 1
-	JE addto1
+	JE get1
 	cmp eax, 2
-	JE addto2
+	JE get2
 	cmp eax, 3
-	JE addto3
+	JE get3
 	cmp eax, 4
-	JE addto4
+	JE get4
 	cmp eax, 5
-	JE addto5
+	JE get5
 
-	addto1:
+	get1:
 		mov esi, offset player1Hand
-		one:
-			mov cl, [esi]
-			cmp cl, 52
-			JE endadd
-			inc esi
-			jmp one
-
-	addto2:
+		jmp getHand
+		
+	get2:
 		mov esi, offset player2Hand
-		two:
-			mov cl, [esi]
-			cmp cl, 52
-			JE endadd
-			inc esi
-			jmp two
-	
-	addto3:
+		jmp getHand
+		
+	get3:
 		mov esi, offset player3Hand
-		three:
-			mov cl, [esi]
-			cmp cl, 52
-			JE endadd
-			inc esi
-			jmp three
+		jmp getHand
 		
-	addto4:
+	get4:
 		mov esi, offset player4Hand
-		four:
-			mov cl, [esi]
-			cmp cl, 52
-			JE endadd
-			inc esi
-			jmp four
+		jmp getHand
 		
-	addto5:
+	get5:
 		mov esi, offset player5Hand
-		five:
-			mov cl, [esi]
-			cmp cl, 52
-			JE endadd
-			inc esi
-			jmp five
+		jmp getHand
 
+	getHand:
+	push eax
+
+	copyGet:
+	MOV al, [ESI]
+	MOV [EDI], al
+
+	INC ECX
+	INC ESI
+	INC EDI
+	CMP ECX, HAND_SIZE
+	JE copyGet
+
+	pop eax
+		
+	RET
+getPlayerHand ENDP
+
+;pass player number in EAX places handbuffer into that players hand
+setPlayerHand PROC USES ECX EDI ESI
+	mov ecx, 0
+	mov edi, offset handBuffer
+
+	cmp eax, 1
+	JE set1
+	cmp eax, 2
+	JE set2
+	cmp eax, 3
+	JE set3
+	cmp eax, 4
+	JE set4
+	cmp eax, 5
+	JE set5
+
+	set1:
+		mov esi, offset player1Hand
+		jmp setHand
+		
+	set2:
+		mov esi, offset player2Hand
+		jmp setHand
+		
+	set3:
+		mov esi, offset player3Hand
+		jmp setHand
+		
+	set4:
+		mov esi, offset player4Hand
+		jmp setHand
+		
+	set5:
+		mov esi, offset player5Hand
+		jmp setHand
+
+	setHand:
+	push eax
+
+	copySet:
+	MOV al, [EDI]
+	MOV [ESI], al
+
+	INC ECX
+	INC ESI
+	INC EDI
+	CMP ECX, HAND_SIZE
+	JE copySet
+
+	pop eax
+
+	RET
+setPlayerHand ENDP
+
+
+;pass player number in EAX and card to add in EBX
+addCardPlayer PROC USES ECX ESI
+	call getPlayerHand
+	mov esi, offset handbuffer
+
+one:
+	mov cl, [esi]
+	cmp cl, 52
+	JE endadd
+	inc esi
+	jmp one
 
 endadd:
 	mov [esi], ebx
+	call setPlayerHand
 
 	RET
 addCardPlayer ENDP
 
+
 getHandValue PROC
+	call getPlayerHand
+	mov esi, offset handbuffer
+	mov ebx, 0
+	mov eax, [esi]
+
+	sumHand:
+	call getCardNumber
+	add ebx, eax
+	inc esi
+	mov eax, [esi]
+	cmp eax, 52
+	JE J1
+
+	J1:
+	mov esi, offset handbuffer
+	J2:
+	cmp ebx, 21
+	JBE endit
+
+	checkAce:
+		mov edx, [esi]
+		cmp edx, 11
+		JE changeto1
+		cmp edx, 52
+		JE endit
+		inc esi
+		jmp checkace
+
+		changeto1:
+		sub ebx, 10
+		jmp J2
+
+
+	endit:
+
 
 	RET
 getHandValue ENDP
