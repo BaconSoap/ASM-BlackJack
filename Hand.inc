@@ -1,12 +1,5 @@
 .data
-AllHands DB CARD_COUNT DUP(52)
 DealerHand DB HAND_SIZE DUP(52)
-player1Hand DB HAND_SIZE DUP(52)
-player2Hand DB HAND_SIZE DUP(52)
-player3Hand DB HAND_SIZE DUP(52)
-Player4Hand DB HAND_SIZE DUP(52)
-player5Hand DB HAND_SIZE DUP(52)
-
 .code
 
 testHand PROC
@@ -43,25 +36,26 @@ testHand ENDP
 
 ;Gets the dealer hand and puts it into HandBuffer
 GetDealerHand PROC USES EAX ESI EDI ECX
+	
 	MOV ECX, 0
-	MOV ESI, OFFSET DealerHand
+	MOV ESI, OFFSET Dealer.Phand
 	MOV EDI, OFFSET HandBuffer
 	StartCopy:
-	MOV EAX, [ESI]
-	MOV [EDI], EAX
+		MOV EAX, [ESI]
+		MOV [EDI], EAX
 
-	INC ECX
-	INC ESI
-	INC EDI
-	CMP ECX, HAND_SIZE
-	JE StartCopy
+		INC ECX
+		INC ESI
+		INC EDI
+		CMP ECX, HAND_SIZE
+		JNE StartCopy
 	RET
 GetDealerHand ENDP
 
 ;Places HandBuffer into the dealer hand
 SetDealerHand PROC USES EAX ESI EDI ECX
 	MOV ECX, 0
-	MOV EDI, OFFSET DealerHand
+	MOV EDI, OFFSET Dealer.Phand
 	MOV ESI, OFFSET HandBuffer
 	StartCopy:
 	MOV EAX, [ESI]
@@ -71,7 +65,7 @@ SetDealerHand PROC USES EAX ESI EDI ECX
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
-	JE StartCopy
+	JNE StartCopy
 	RET
 SetDealerHand ENDP
 
@@ -92,23 +86,23 @@ getPlayerHand PROC USES ECX ESI EDI
 	JE get5
 
 	get1:
-		mov esi, offset player1Hand
+		mov esi, offset Player1.phand
 		jmp getHand
 		
 	get2:
-		mov esi, offset player2Hand
+		mov esi, offset Player2.phand
 		jmp getHand
 		
 	get3:
-		mov esi, offset player3Hand
+		mov esi, offset player3.phand
 		jmp getHand
 		
 	get4:
-		mov esi, offset player4Hand
+		mov esi, offset player4.phand
 		jmp getHand
 		
 	get5:
-		mov esi, offset player5Hand
+		mov esi, offset player5.phand
 		jmp getHand
 
 	getHand:
@@ -122,7 +116,7 @@ getPlayerHand PROC USES ECX ESI EDI
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
-	JE copyGet
+	JNE copyGet
 
 	pop eax
 		
@@ -146,23 +140,23 @@ setPlayerHand PROC USES ECX EDI ESI
 	JE set5
 
 	set1:
-		mov esi, offset player1Hand
+		mov esi, offset player1.phand
 		jmp setHand
 		
 	set2:
-		mov esi, offset player2Hand
+		mov esi, offset player2.phand
 		jmp setHand
 		
 	set3:
-		mov esi, offset player3Hand
+		mov esi, offset player3.phand
 		jmp setHand
 		
 	set4:
-		mov esi, offset player4Hand
+		mov esi, offset player4.phand
 		jmp setHand
 		
 	set5:
-		mov esi, offset player5Hand
+		mov esi, offset player5.phand
 		jmp setHand
 
 	setHand:
@@ -176,7 +170,7 @@ setPlayerHand PROC USES ECX EDI ESI
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
-	JE copySet
+	JNE copySet
 
 	pop eax
 
@@ -198,6 +192,7 @@ one:
 
 endadd:
 	mov [esi], ebx
+
 	call setPlayerHand
 
 	RET
@@ -206,6 +201,7 @@ addCardPlayer ENDP
 
 getHandValue PROC
 	call getPlayerHand
+
 	mov esi, offset handbuffer
 	mov ebx, 0
 	mov eax, [esi]

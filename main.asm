@@ -7,55 +7,50 @@ TITLE Blackjack						(main.asm)
 HAND_SIZE = 11
 CARD_COUNT = 52
 
-INCLUDE Irvine32.inc
-INCLUDE Deck.inc
+INCLUDE IRVINE32.inc
+INCLUDE PLAYER.inc
 INCLUDE Hand.inc
-INCLUDE Player.inc
-INCLUDE Graphics.inc
-INCLUDE Game.inc
-INCLUDE help.inc
+INCLUDE DECK.INC
+include game.inc
 
 .data
+Playerstructure STRUCT
+		Pname BYTE 30 dup(?)
+		Bet DWORD 434
+		Bankacc DWORD 300
+		phand BYTE HAND_SIZE DUP(52)
+		CardCount BYTE 0
+Playerstructure ends
+
 
 HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
 CardBuffer DB 52 ;CardBuffer will hold a single card
-.code
 
+Dealer Playerstructure<"Dealer">
+Player1 PlayerStructure<>
+Player2 PlayerStructure<>
+Player3 PlayerStructure<>
+Player4 PlayerStructure<>
+Player5 PlayerStructure<>
+
+.code 
 main PROC
-	call randomize
+CALL randomize
+CALL clearregs
 
-	call Clrscr
-	call ClearRegs
-	
-	CALL InitGame
-	call shuffledeck
-	CALL TestDeck
+call rungame
+;call nameinput
+;call outputplayers
+;CALL initializedeck
+;call shuffledeck
+;call testHand
+;call winbet
+;call placebet
 
-	CALL GameLoop
+;mov eax, player3.bet
+;call writedec
 
-	CALL CrLf
 
-	;call testDeal
-
-	call testHand
-	
-	;call testHelp
-	;call testPlayer
-	;call takebets
-	;call outputPlayers
-	call crlf
-
-	exit
-main ENDP
-
-InitGame PROC
-	CALL InitializeDeck
-	RET
-InitGame ENDP
-
-GameLoop PROC
-	RET
-GameLoop ENDP
 
 ClearRegs PROC
 	
@@ -69,66 +64,6 @@ ClearRegs PROC
 	ret
 ClearRegs ENDP
 
-GetPlayers PROC
-	call nameInput
-	RET
-GetPlayers ENDP
-
-TakeBets PROC USES EAX ECX
-	mov eax, 1
-	mov ecx, playercount
-	betLoop:
-		call inputBet
-		inc eax
-	loop betLoop
-	RET
-TakeBets ENDP
-
-DealHands PROC USES ECX EBX EAX
-	mov ecx, 2
-	D:
-	mov ebx, 1
-	fillHands:
-		call dealCard
-		xchg eax, ebx
-		;eax player number ebx card
-		call addCardPlayer
-		mov ebx, eax
-		inc ebx 
-	cmp ebx, playerCount
-	JBE fillHands
-
-	call dealCard
-	;call addCardDealer
-	loop D
-
-	RET
-DealHands ENDP
-
-TakeTurns PROC
-
-	RET
-TakeTurns ENDP
-
-HitPlayer PROC
-	call dealCard
-
-	RET
-HitPlayer ENDP
-
-StandPlayer PROC
-	
-	RET
-StandPlayer ENDP
-
-DrawCard PROC
-	
-	RET
-DrawCard ENDP
-
-evaluateHand PROC
-
-	RET
-evaluateHand ENDP
-
+exit
+main endp
 END main

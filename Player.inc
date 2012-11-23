@@ -1,26 +1,15 @@
 .data
 	
-	banks DWORD 5 DUP(300)
-	bet DWORD 5 DUP(0)
 	playerCount DWORD 1
 	countPrompt BYTE "Enter the number of players: ", 0
 	namePrompt BYTE "Enter the name of player ", 0
-	name1 BYTE 30 DUP(0)
-	name2 BYTE 30 DUP(0)
-	name3 BYTE 30 DUP(0)
-	name4 BYTE 30 DUP(0)
-	name5 BYTE 30 DUP(0)
+	betPrompt BYTE "Enter the bet for player ", 0
+	betPrompt2 BYTE ": ", 0
 
 .code
 
-testPlayer PROC
-	call nameInput
-	call outputPlayers
-	
 
-	RET
-testPlayer ENDP
-
+;displays all players in game
 outputPlayers PROC
 	mov eax, 1
 	mov ecx, playerCount
@@ -40,173 +29,164 @@ nameInput PROC USES EAX EBX ECX EDX
 	mov playerCount, eax
 
 	mov ebx, 1
-	
-	mov ecx, playerCount
-	inputLoop:
-		mov edx, offset namePrompt
-		call WriteString
-		mov eax, ebx
-		call WriteDec
-		mov eax, ' '
-		call WriteChar
 
-		cmp ebx, 1
-		JE inName1
-		cmp ebx, 2
-		JE inName2
-		cmp ebx, 3
-		JE inName3
-		cmp ebx, 4
-		JE inName4
-		cmp ebx, 5
-		JE inName5
+	mov ecx, playercount
+	NameLoop:
+			mov edx, offset namePrompt
+			call WriteString
+			mov eax, ebx
+			call WriteDec
+			mov eax, ' '
+			call WriteChar
 
 		inName1:
-			mov edx, offset name1
-			jmp inswitchend
+			cmp ebx, 1
+			JNE inName2
+			mov EDX, offset Player1.Pname
+			JMP inputName
 		inName2:
-			mov edx, offset name2
-			jmp inswitchend
+			cmp ebx, 2
+			JNE inName3
+			mov EDX, offset Player2.Pname
+			JMP inputName
 		inName3:
-			mov edx, offset name3
-			jmp inswitchend
+			cmp ebx, 3
+			JNE inName4
+			mov EDX, offset Player3.Pname
+			JMP inputName
 		inName4:
-			mov edx, offset name4
-			jmp inswitchend
+			cmp ebx, 4
+			JNE inName5
+			mov EDX, offset Player4.Pname
+			JMP inputName
 		inName5:
-			mov edx, offset name5
-			jmp inswitchend
+			cmp ebx, 5
+			mov EDX, offset Player5.Pname
+			JMP inputName
 
-		inSwitchEnd:
-
+		inputName:
 		push ecx
-		mov ecx, SIZEOF name1
+		mov ecx, SIZEOF Player1.Pname
 		call ReadString
 
 		inc ebx
 		pop ecx
-	loop inputLoop
+	loop NameLoop
+			
 
 	RET
 nameInput ENDP
 
 ;displays player and bank pass eax player number 1-5
-display PROC USES EBX ECX EDX ESI
+display PROC USES EBX ECX EDX ESI EAX
 
-	cmp eax, 1
-	JE outName1
-	cmp eax, 2
-	JE outName2
-	cmp eax, 3
-	JE outName3
-	cmp eax, 4
-	JE outName4
-	cmp eax, 5
-	JE outName5
 
-	outName1:
-		mov edx, offset name1
-		mov esi, offset banks
-		push eax
-		jmp outputPlayer
-	outName2:
-		mov edx, offset name2
-		jmp switchend
-	outName3:
-		mov edx, offset name3
-		jmp switchend
-	outName4:
-		mov edx, offset name4
-		jmp switchend
-	outName5:
-		mov edx, offset name5
-		jmp switchend
+		Pstats1:
+			cmp eax, 1
+			JNE Pstats2
+			mov EDX, OFFSET Player1.pname
+			mov EAX, Player1.Bankacc
+			JMP printinfo
+		Pstats2:
+			cmp eax, 2
+			JNE Pstats3
+			mov EDX, OFFSET Player2.pname
+			mov EAX, Player2.Bankacc
+			JMP printinfo
+		Pstats3:
+			cmp eax, 3
+			JNE Pstats4
+			mov EDX, OFFSET Player3.pname
+			mov EAX, Player3.Bankacc
+			JMP printinfo
+		Pstats4:
+			cmp eax, 4
+			JNE Pstats5
+			mov EDX, OFFSET Player4.pname
+			mov EAX, Player4.Bankacc
+			JMP printinfo
+		Pstats5:
+			mov EDX, OFFSET Player5.pname
+			mov EAX, Player5.Bankacc
+			JMP printinfo
+			
+		printinfo:
+			CALL WriteString
+			CALL Crlf
+			CALL WriteDec
+			CALL Crlf
 
-switchend:
-	mov ebx, 0
-	mov ecx, eax
-	dec ecx
-	push eax
-
-	multiply:
-		add ebx, 4
-	loop multiply
-
-	mov esi, offset banks
-	add esi, ebx
-
-outputPlayer:
-
-	mov eax, [esi]
-	call WriteString
-	call crlf
-	call WriteDec
-	call crlf
-
-	pop eax
 
 	RET
 display ENDP
 
-
-;update bank pass eax player number and ebx amount to change updates bank array
+;update bank pass eax player number and ebx amount to change update bank
 deposit PROC
+
+	Pdeposit1:
+			cmp eax, 1
+			JNE Pdeposit2
+			ADD Player1.Bankacc, EBX
+			JMP depositend
+		Pdeposit2:
+			cmp eax, 2
+			JNE Pdeposit3
+			ADD Player2.Bankacc, EBX
+			JMP depositend
+		Pdeposit3:
+			cmp eax, 3
+			JNE Pdeposit4
+			ADD Player3.Bankacc, EBX
+			JMP depositend
+		Pdeposit4:
+			cmp eax, 4
+			JNE Pdeposit5
+			ADD Player4.Bankacc, EBX
+			JMP depositend
+		Pdeposit5:
+			ADD Player5.Bankacc, EBX
+		
+		depositend:
 	
-	mov esi, offset banks
-
-	cmp eax, 1
-	JE addtobank
-
-	mov ecx, eax
-	mov edx, 0
-	dec ecx
-	multiply:
-		add edx, 4
-	loop multiply
-
-	add esi, edx
-
-addtobank:
-	
-	add [esi], ebx
-
 	RET
 deposit ENDP
 
-;update bank pass eax player number and ebx amount to change updates bank array
-withdrawl PROC
+;update bank pass eax player number and ebx amount to change update bank
+withdraw PROC
+
+	Pwithdraw1:
+			cmp eax, 1
+			JNE Pwithdraw2
+			SUB Player1.Bankacc, EBX
+			JMP withdrawend
+		Pwithdraw2:
+			cmp eax, 2
+			JNE Pwithdraw3
+			SUB Player2.Bankacc, EBX
+			JMP withdrawend
+		Pwithdraw3:
+			cmp eax, 3
+			JNE Pwithdraw4
+			SUB Player3.Bankacc, EBX
+			JMP withdrawend
+		Pwithdraw4:
+			cmp eax, 4
+			JNE Pwithdraw5
+			SUB Player4.Bankacc, EBX
+			JMP withdrawend
+		Pwithdraw5:
+			SUB Player5.Bankacc, EBX
+		
+		withdrawend:
 	
-	mov esi, offset banks
-
-	cmp eax, 1
-	JE removefrombank
-
-	mov ecx, eax
-	mov edx, 0
-	dec ecx
-	multiply:
-		add edx, 4
-	loop multiply
-
-	add esi, edx
-
-removefrombank:
-	
-	sub [esi], ebx
-
 	RET
-withdrawl ENDP
+withdraw ENDP
 
-.data
-	betPrompt BYTE "Enter the bet for player ", 0
-	betPrompt2 BYTE ": ", 0
-
-.code
-;pass player number in EAX
-inputBet PROC USES ECX EDX ESI
+;pass player number in EAX withdraws money from account and places in bet
+PlaceBet PROC USES ECX EDX ESI
 	mov edx, offset betprompt
 	call writeString
-	call writeDec
+	call writedec
 	mov edx, offset betprompt2
 	call writeString
 	push eax
@@ -214,70 +194,93 @@ inputBet PROC USES ECX EDX ESI
 	mov ebx, eax
 	pop eax
 
-	mov esi, offset bet
-
-	cmp eax, 1
-	JE addbet
-
-	mov ecx, eax
-	mov edx, 0
-	dec ecx
-	multiply:
-		add edx, 4
-	loop multiply
-
-	add esi, edx
-
-addbet:
-	mov [esi], ebx
-
-	call withdrawl
-
+	Pbetting1:
+			cmp eax, 1
+			JNE Pbetting2
+			ADD Player1.Bet, EBX
+			JMP bettingend
+		Pbetting2:
+			cmp eax, 2
+			JNE Pbetting3
+			ADD Player2.Bet, EBX
+			JMP bettingend
+		Pbetting3:
+			cmp eax, 3
+			JNE Pbetting4
+			ADD Player3.Bet, EBX
+			JMP bettingend
+		Pbetting4:
+			cmp eax, 4
+			JNE Pbetting5
+			ADD Player4.Bet, EBX
+			JMP bettingend
+		Pbetting5:
+			ADD Player5.Bet, EBX
+		
+		bettingend:
+		CALL withdraw
 	RET
-inputBet ENDP
+PlaceBet ENDP
 
 ;for double down send player number in EAX
 doubleBet PROC
-	mov esi, offset bet
-
-	cmp eax, 1
-	JE addbet
-
-	mov ecx, eax
-	mov edx, 0
-	dec ecx
-	multiply:
-		add edx, 4
-	loop multiply
-
-	add esi, edx
-
-addbet:
-	mov ebx, [esi]
-	add [esi], ebx
-	call withdrawl
+	
+	Pdouble1:
+			cmp eax, 1
+			JNE Pdouble2
+			ADD Player1.Bet, EBX
+			JMP doubleend
+		Pdouble2:
+			cmp eax, 2
+			JNE Pdouble3
+			ADD Player2.Bet, EBX
+			JMP doubleend
+		Pdouble3:
+			cmp eax, 3
+			JNE Pdouble4
+			ADD Player3.Bet, EBX
+			JMP doubleend
+		Pdouble4:
+			cmp eax, 4
+			JNE Pdouble5
+			ADD Player4.Bet, EBX
+			JMP doubleend
+		Pdouble5:
+			ADD Player5.Bet, EBX
+		
+		doubleend:
+		CALL withdraw
 	RET
 doubleBet ENDP
 
 ;send the winning player number in EAX
 winBet PROC
-	mov esi, offset bet
-
-	cmp eax, 1
-	JE winningBet
-
-	mov ecx, eax
-	mov edx, 0
-	dec ecx
-	multiply:
-		add edx, 4
-	loop multiply
-
-	add esi, edx
-
-winningBet:
-	mov ebx, [esi]
-	call deposit
-	call deposit
+	
+	Pwon1:
+			cmp eax, 1
+			JNE Pwon2
+			mov ebx, Player1.bet
+			JMP wonend
+		Pwon2:
+			cmp eax, 2
+			JNE Pwon3
+			mov ebx, Player2.bet
+			JMP wonend
+		Pwon3:
+			cmp eax, 3
+			JNE Pwon4
+			mov ebx, Player3.bet
+			JMP wonend
+		Pwon4:
+			cmp eax, 4
+			JNE Pwon5
+			mov ebx, Player4.bet
+			JMP wonend
+		Pwon5:
+			mov ebx, Player5.bet
+		
+		wonend:
+		CALL deposit
+		CALL deposit
 	RET
 winBet ENDP
