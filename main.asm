@@ -8,17 +8,15 @@ HAND_SIZE = 11
 CARD_COUNT = 52
 
 INCLUDE IRVINE32.inc
-INCLUDE PLAYER.inc
+INCLUDE Player.inc
 INCLUDE Hand.inc
-INCLUDE DECK.INC
-include game.inc
-
+INCLUDE Deck.inc
 .data
 Playerstructure STRUCT
 		Pname BYTE 30 dup(?)
-		Bet DWORD 434
+		Bet DWORD 0
 		Bankacc DWORD 300
-		phand BYTE HAND_SIZE DUP(52)
+			phand DB 22,33,44,11, HAND_SIZE DUP(52)
 		CardCount BYTE 0
 Playerstructure ends
 
@@ -26,31 +24,35 @@ Playerstructure ends
 HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
 CardBuffer DB 52 ;CardBuffer will hold a single card
 
-Dealer Playerstructure<"Dealer">
-Player1 PlayerStructure<>
-Player2 PlayerStructure<>
-Player3 PlayerStructure<>
-Player4 PlayerStructure<>
-Player5 PlayerStructure<>
+Dealer Playerstructure<"Dealer",0,0,2 DUP(22),0>
+PlayerArray PlayerStructure 5 DUP(<>)
 
 .code 
 main PROC
-CALL randomize
-CALL clearregs
+	CALL randomize
+	CALL ClearRegs
+	call initializedeck
+	call shuffledeck
 
-call rungame
-;call nameinput
-;call outputplayers
-;CALL initializedeck
-;call shuffledeck
-;call testHand
-;call winbet
-;call placebet
+	;call nameinput
+	;call outputplayers
+	call dealcard
+	movzx ebx, al
+	call addcarddealer
+	call dealcard
+	movzx ebx, al
+	call addcarddealer
+	
+	;mov ebx, 5
+	;call getplayerhand
+	;call addcardplayer
+	;mov ebx,43
+	;call addcardplayer
+	;call getdealerhand
+	;call setplayerhand
 
-;mov eax, player3.bet
-;call writedec
-
-
+	;call getplayerhand
+	call testhand
 
 ClearRegs PROC
 	

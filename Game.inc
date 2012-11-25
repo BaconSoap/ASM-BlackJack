@@ -5,12 +5,12 @@
 
 RunGame PROC
 		CALL InitializeDeck
+		
 		CALL NameInput
+		
 		CALL ShuffleDeck
-		CALL ShuffleDeck
-
-		call testDeal
-		call testdeal
+		;call testdeal
+		call dealcard
 		mov eax,1 ; loop will run through first for player one
 		MOV ECX, PlayerCount
 
