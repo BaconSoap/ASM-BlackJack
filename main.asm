@@ -26,9 +26,10 @@ HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed thr
 CardBuffer DB 52 ;CardBuffer will hold a single card
 
 
+PlayerArray PlayerStructure 5 DUP(<>)
 Dealer Playerstructure<"Dealer",0,0,HAND_SIZE DUP(52),0>
 
-PlayerArray PlayerStructure 5 DUP(<>)
+
 
 .code 
 main PROC
