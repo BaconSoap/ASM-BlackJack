@@ -1,35 +1,113 @@
 .data
-
+welcomeMsg BYTE "Welcome to the wonderful world of BlackJack!",0dh,0ah,0
+SelectionMsg Byte "Please select one of the following",0dh,0ah
+			 BYTE "1. HIT ",0dh,0ah
+			 BYTE "2. PASS ",0dh,0ah
+			 BYTE "3. DOUBLE DOWN ",0dh,0ah
+			 BYTE "4. SPLIT ",0dh,0ah,0
+playerChoice BYTE 0
 
 .code
 
 RunGame PROC
+	;creates deck, shuffles deck asks for names
+		MOV EDX, offset welcomeMsg
+		Call WriteString
+		CALL Crlf
 		CALL InitializeDeck
-		
+		CALL ShuffleDeck		
 		CALL NameInput
-		
-		CALL ShuffleDeck
-		;call testdeal
-		call dealcard
-		mov eax,1 ; loop will run through first for player one
+	;-------------------------------------------
+	
+	;Ask each player for an initial bet, loops as many times as necessary
+		MOV EAX, 1 
 		MOV ECX, PlayerCount
+		;BettingLoop:
+		;	CALL placebet
+		;	INC EAX
+		;Loop BettingLoop
 
-		;gets all players bets before dealing cards
-		BettingLoop:
-			CALL placebet
-			inc EAX
-		Loop BettingLoop
-
-;initial deal for all players
-		mov eax,1 ; 
-		MOV ECX, PlayerCount
-	dealLoop:
-
-
-	Loop dealLoop
+	;initial deal for dealer
+		MOV ECX, 2
+		DEALLOOP:
+			CALL DealCard
+			MOVZX EBX, AL
+			CALL AddCardDealer
+	;---------------------------
+		;make initial deals for players
+			MOV EAX, 1 
+			PUSH ECX
+			MOV ECX, PlayerCount
+			InitialDeal:
+				push eax
+				call dealcard
+				movzx ebx, al
+				pop eax
+				call addcardplayer
+				inc eax
+			Loop InitialDeal
+			POP ECX
+		Loop DEALLOOP
+		;--------------------------------
 
 	call outputplayers
+	call showdealerhand
+	;
 
-
+	;LOOP THROUGH AND GIVE EACH PLAYER A chance to select an option
+		mov EAX, 1
+		mov ecx, Playercount
+		taketurn:
+			;call testhand
+			call Playerturn
+			inc eax
+		loop taketurn
+			call outputplayers
+	call showdealerhand
+		
 ret
 RunGame ENDP
+
+
+PlayerTurn PROC
+pushad
+
+turnloop:
+	MOV EDX, offset selectionMsg
+	CALL WriteString
+	CALL Crlf
+	push EAX
+	call readint
+	MOV playerchoice, al
+
+	.if playerchoice == 1
+		CALL DealCard
+		movzx ebx, al
+		pop eax
+		call addcardplayer
+		;checkhand value, jump to end turn if over 21
+
+
+	.elseif playerchoice == 2
+		pop eax
+		JMP endturn
+		;double down, only allows you to hit once
+	.elseif playerchoice == 3
+		pop eax
+		call doublebet
+		push eax
+		call dealcard
+		movzx ebx, al
+		pop eax
+		call addcardplayer
+		jmp endturn
+	.elseif playerchoice == 4
+		pop eax
+		;splitting goes here
+
+		.endif
+		JMP turnloop
+	endturn:
+popad
+ret
+PlayerTurn ENDP

@@ -3,7 +3,7 @@
 	playerCount DWORD 1
 	countPrompt BYTE "Enter the number of players: ", 0
 	namePrompt BYTE "Enter the name of player ", 0
-	betPrompt BYTE "Enter the bet for player ", 0
+	betPrompt BYTE "Enter the bet for ", 0
 	betPrompt2 BYTE ": ", 0
 
 .code
@@ -14,6 +14,8 @@ outputPlayers PROC
 	mov eax, 1
 	outloop:
 		call display
+		call Testhand
+		call crlf
 		inc eax
 	loop outloop
 
@@ -113,15 +115,7 @@ withdraw ENDP
 
 ;pass player number in EAX(1-5) withdraws money from account and places in bet
 PlaceBet PROC USES ECX EDX ESI
-	mov edx, offset betprompt
-	call writeString
-	call writedec
-	mov edx, offset betprompt2
-	call writeString
-	push eax
-	call readInt
-	mov ebx, eax
-	pop eax
+	
 	push eax
 	mov esi, 0
 	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
@@ -129,10 +123,22 @@ PlaceBet PROC USES ECX EDX ESI
 		add esi, TYPE Playerstructure
 		dec eax
 	.endw
-	;sub ebx to players bet
-	ADD (Playerstructure PTR playerarray[esi]).bet, EBX
-	;withdraw amount from players bank | pops player number from eax so it withdraws from correct player
 	pop eax
+
+	;betting prompt for players
+	mov edx, offset betprompt
+	call writeString
+	lea edx, (Playerstructure PTR playerarray[esi]).Pname
+	call writeString
+	push eax
+	call readInt
+	mov ebx, eax
+	pop eax
+	;---------------------------
+
+	;add ebx to players bet
+	ADD (Playerstructure PTR playerarray[esi]).bet, EBX
+	;withdraw amount from players bank | pops player number from eax so it withdraws from correct player	
 	CALL withdraw
 	
 	RET

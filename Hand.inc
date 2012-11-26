@@ -124,13 +124,13 @@ addCardPlayer PROC USES ECX ESI EAX
 	mov esi, offset handbuffer
 
 one:
-call dumpregs
+;call dumpregs
 	mov cl, [esi]
 	cmp cl, 52
 	JE endadd
 	inc esi
 	jmp one
-	call dumpregs
+	;call dumpregs
 endadd:
 	mov [esi], bl
 	call setPlayerHand
@@ -205,6 +205,36 @@ getHandValue ENDP
 
 
 
+showdealerHand PROC
+	pushad
+	mov edx, offset dealer.pname
+	call writestring
+	call crlf
+	call getdealerhand
+	mov esi, offset handBuffer
+
+loopen:
+	mov eax, 0
+	mov al, [esi]
+	;call writeint
+	cmp al, 52
+	JE endstuff
+	call getcarddisplay
+	mov edx, offset carddisplaystring
+	call writestring
+	call crlf
+	;add esi, 4
+	inc esi
+	;call dumpregs
+
+	jmp loopen
+
+	endstuff:
+
+	popad
+	RET
+showdealerHand ENDP
+
 
 
 
@@ -213,21 +243,15 @@ getHandValue ENDP
 
 testHand PROC
 	pushad
-
-	;call getdealerHand
-	;mov eax, 1
-	;call setplayerhand
-	;call getplayerhand
-	;mov eax, 2
-	;call setplayerhand
-	;call getplayerhand
-
+	call writeint
+	call crlf
+	call getplayerhand
 	mov esi, offset handBuffer
 
 testit:
 	mov eax, 0
 	mov al, [esi]
-	call writeint
+	;call writeint
 	cmp al, 52
 	JE endit
 	call getcarddisplay
