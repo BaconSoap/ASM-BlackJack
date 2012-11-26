@@ -127,13 +127,13 @@ addCardPlayer PROC USES ECX ESI EAX
 	mov esi, offset handbuffer
 
 one:
-call dumpregs
+;call dumpregs
 	mov cl, [esi]
 	cmp cl, 52
 	JE endadd
 	inc esi
 	jmp one
-	call dumpregs
+	;call dumpregs
 endadd:
 	mov [esi], bl
 	call setPlayerHand
@@ -227,7 +227,6 @@ GetHandValueNew PROC USES ESI
 		JGE ClampToTen
 		INC EAX
 		JMP AddToTotal
-
 		IHateAces:
 		INC aceCount
 		MOV EAX, 11
@@ -259,18 +258,69 @@ GetHandValueNew PROC USES ESI
 	RET
 GetHandValueNew ENDP
 
+showdealerHand PROC
+	pushad
+	mov edx, offset dealer.pname
+	call writestring
+	call crlf
+	call getdealerhand
+	mov esi, offset handBuffer
+
+loopen:
+	mov eax, 0
+	mov al, [esi]
+	;call writeint
+	cmp al, 52
+	JE endstuff
+	call getcarddisplay
+	mov edx, offset carddisplaystring
+	call writestring
+	call crlf
+	;add esi, 4
+	inc esi
+	;call dumpregs
+
+	jmp loopen
+
+	endstuff:
+
+	popad
+	RET
+showdealerHand ENDP
+
+
+		ClampToTen:
+		MOV EAX, 10
+		JMP AddToTotal
+
+		AddToTotal:
+		ADD total, EAX
+		INC ESI
+		JMP StartFirstLoop
+
+	StartAceLoop:
+		CMP aceCount, 0
+		JLE EndOfProc
+		;IF Total > 21 Subtract 10 from total
+		CMP total, 21
+		JG SubtractTen
+		DEC aceCount
+		JMP StartAceLoop
+		SubtractTen:
+		SUB total, 10
+		JMP StartAceLoop
+	EndOfProc:
+	MOV EAX, total
+	
+	RET
+GetHandValueNew ENDP
+
 
 testHand PROC USES ESI EAX EDX
 	pushad
-
-	;call getdealerHand
-	;mov eax, 1
-	;call setplayerhand
-	;call getplayerhand
-	;mov eax, 2
-	;call setplayerhand
-	;call getplayerhand
-
+	call writeint
+	call crlf
+	call getplayerhand
 	mov esi, offset handBuffer
 	call crlf
 	call crlf
