@@ -127,19 +127,13 @@ addCardPlayer PROC USES ECX ESI EAX
 	mov esi, offset handbuffer
 
 one:
-<<<<<<< HEAD
-;call dumpregs
-=======
->>>>>>> hand value
+
 	mov cl, [esi]
 	cmp cl, 52
 	JE endadd
 	inc esi
 	jmp one
-<<<<<<< HEAD
-	;call dumpregs
-=======
->>>>>>> hand value
+
 endadd:
 	mov [esi], bl
 	call setPlayerHand
@@ -294,31 +288,6 @@ loopen:
 showdealerHand ENDP
 
 
-		ClampToTen:
-		MOV EAX, 10
-		JMP AddToTotal
-
-		AddToTotal:
-		ADD total, EAX
-		INC ESI
-		JMP StartFirstLoop
-
-	StartAceLoop:
-		CMP aceCount, 0
-		JLE EndOfProc
-		;IF Total > 21 Subtract 10 from total
-		CMP total, 21
-		JG SubtractTen
-		DEC aceCount
-		JMP StartAceLoop
-		SubtractTen:
-		SUB total, 10
-		JMP StartAceLoop
-	EndOfProc:
-	MOV EAX, total
-	
-	RET
-GetHandValueNew ENDP
 
 
 testHand PROC USES ESI EAX EDX
