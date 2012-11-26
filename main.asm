@@ -52,7 +52,34 @@ main PROC
 	;call setplayerhand
 
 	;call getplayerhand
+	
+	
+
 	call testhand
+	CALL CRLF
+	
+	MOV ESI, OFFSET HandBuffer
+	MOV EAX, 0
+	MOV [ESI], EAX
+	MOV EAX, 13
+	MOV [ESI+1], EAX
+	MOV EAX, 34
+	MOV [ESI+2], EAX
+	MOV EAX, 51
+	MOV [ESI+3], EAX
+	MOV EAX, 52
+	MOV [ESI+4], EAX
+	MOV EAX, 0
+	CALL SetPlayerHand
+	CALL PrintHandBuffer
+	
+	CALL GetHandValueNew
+	CALL CRLF
+	CALL WriteInt
+
+	CALL CRLF
+exit
+main endp
 
 ClearRegs PROC
 	
@@ -66,6 +93,4 @@ ClearRegs PROC
 	ret
 ClearRegs ENDP
 
-exit
-main endp
 END main

@@ -2,6 +2,9 @@
 ;using to test
 DealerHand DB 1,3, 51, 52
 DEALERCARDCOUNT DB 2
+total DD ?
+aceCount DD ?
+
 .code
 
 
@@ -201,17 +204,63 @@ getHandValue PROC
 	RET
 getHandValue ENDP
 
+;Takes in EAX player #
+;Outputs player's score in EAX
+GetHandValueNew PROC USES ESI 
+	
+	CALL getPlayerHand
+	MOV ESI, OFFSET HandBuffer
+	MOV total, 0
+	MOV aceCount, 0
+
+	
+	StartFirstLoop:
+		MOV EAX, 0
+		MOV AL, [ESI]
+		CMP EAX, 52
+		JE StartAceLoop
+		CALL getCardNumber
+
+		CMP EAX, 0
+		JE IHateAces
+		CMP EAX, 10
+		JGE ClampToTen
+		INC EAX
+		JMP AddToTotal
+
+		IHateAces:
+		INC aceCount
+		MOV EAX, 11
+		JMP AddToTotal
+
+		ClampToTen:
+		MOV EAX, 10
+		JMP AddToTotal
+
+		AddToTotal:
+		ADD total, EAX
+		INC ESI
+		JMP StartFirstLoop
+
+	StartAceLoop:
+		CMP aceCount, 0
+		JLE EndOfProc
+		;IF Total > 21 Subtract 10 from total
+		CMP total, 21
+		JG SubtractTen
+		DEC aceCount
+		JMP StartAceLoop
+		SubtractTen:
+		SUB total, 10
+		JMP StartAceLoop
+	EndOfProc:
+	MOV EAX, total
+	
+	RET
+GetHandValueNew ENDP
 
 
-
-
-
-
-
-
-
-
-testHand PROC
+testHand PROC USES ESI EAX EDX
 	pushad
 
 	;call getdealerHand
@@ -223,11 +272,12 @@ testHand PROC
 	;call getplayerhand
 
 	mov esi, offset handBuffer
-
+	call crlf
+	call crlf
 testit:
 	mov eax, 0
 	mov al, [esi]
-	call writeint
+	;call writeint
 	cmp al, 52
 	JE endit
 	call getcarddisplay
@@ -245,3 +295,23 @@ testit:
 	popad
 	RET
 testHand ENDP
+
+
+PrintHandBuffer PROC USES ESI EAX EDX
+	MOV ESI, OFFSET HandBuffer
+	Top:
+		MOV EAX, 0
+		MOV AL, [ESI]
+		CMP EAX, 52
+		JGE EndLoop
+		CALL GetCardDisplay
+		MOV EDX, OFFSET CardDisplayString
+		
+		CALL WriteString
+		CALL CRLF
+		INC ESI
+		JMP Top
+
+	EndLoop:
+	RET
+PrintHandBuffer ENDP

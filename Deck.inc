@@ -8,37 +8,37 @@ topCard DB 0
 
 ;Test various deck procedures
 .CODE
-					TestDeck PROC
-						MOV ECX, 0
-						MOV EDI, offset Deck
+TestDeck PROC
+	MOV ECX, 0
+	MOV EDI, offset Deck
 	
-						s:
-						MOV EAX, 0
-						MOV AL, [EDI]
-						CALL GetCardDisplay
-						MOV EDX, OFFSET CardDisplayString
-						CALL WriteString
-						CALL CrLf
-						INC ECX
-						INC EDI
+	s:
+	MOV EAX, 0
+	MOV AL, [EDI]
+	CALL GetCardDisplay
+	MOV EDX, OFFSET CardDisplayString
+	CALL WriteString
+	CALL CrLf
+	INC ECX
+	INC EDI
 
-						CMP ECX, CARD_COUNT
-						JNE s
-						RET
-					TestDeck ENDP
+	CMP ECX, CARD_COUNT
+	JNE s
+	RET
+TestDeck ENDP
 
-					testDeal PROC
-						mov ecx, 10
-						deal10:
-							call dealCard
-							call getCardDisplay
-							MOV EDX, OFFSET CardDisplayString
-							CALL WriteString
-							call crlf
-						loop deal10
+testDeal PROC
+	mov ecx, 10
+	deal10:
+		call dealCard
+		call getCardDisplay
+		MOV EDX, OFFSET CardDisplayString
+		CALL WriteString
+		call crlf
+	loop deal10
 
-						RET
-					testDeal ENDP
+	RET
+testDeal ENDP
 
 
 
