@@ -42,7 +42,7 @@ SetDealerHand PROC USES EAX ESI EDI ECX EBX
 	INC EBX
 	CMP ECX, HAND_SIZE
 	JNE StartCopy
-	MOV Dealer.CardCount, bl
+	;MOV Dealer.CardCount, bl
 	RET
 SetDealerHand ENDP
 
@@ -124,13 +124,19 @@ addCardPlayer PROC USES ECX ESI EAX
 	mov esi, offset handbuffer
 
 one:
+<<<<<<< HEAD
 ;call dumpregs
+=======
+>>>>>>> hand value
 	mov cl, [esi]
 	cmp cl, 52
 	JE endadd
 	inc esi
 	jmp one
+<<<<<<< HEAD
 	;call dumpregs
+=======
+>>>>>>> hand value
 endadd:
 	mov [esi], bl
 	call setPlayerHand
@@ -144,16 +150,16 @@ addCardDealer PROC USES ECX ESI EAX
 	mov esi, offset handbuffer
 
 one:
-call dumpregs
 	mov cl, [esi]
 	cmp cl, 52
 	JE endadd
 	inc esi
 	jmp one
-	call dumpregs
 endadd:
 	mov [esi], bl
 	call setDealerHand
+
+	inc dealer.cardCount
 
 	RET
 addCardDealer ENDP
@@ -161,42 +167,41 @@ addCardDealer ENDP
 
 
 getHandValue PROC
-	call getPlayerHand
-
+	mov eax, 0
 	mov esi, offset handbuffer
 	mov ebx, 0
-	mov eax, [esi]
+	mov al, [esi]
 
 	sumHand:
-	call getCardNumber
-	add ebx, eax
+	call getCardValue
+	add bl, al
 	inc esi
-	mov eax, [esi]
-	cmp eax, 52
-	JE J1
+	mov al, [esi]
+	cmp al, 52
+	JAE J1
+	jmp sumHand
 
 	J1:
 	mov esi, offset handbuffer
 	J2:
-	cmp ebx, 21
+	cmp bl, 21
 	JBE endit
 
 	checkAce:
-		mov edx, [esi]
-		cmp edx, 11
+		mov al, [esi]
+		call getCardValue
+		cmp al, 11
 		JE changeto1
-		cmp edx, 52
-		JE endit
 		inc esi
-		jmp checkace
+	loop checkace
+	jmp endit
 
 		changeto1:
-		sub ebx, 10
+		sub bl, 10
 		jmp J2
 
-
 	endit:
-
+	mov al, bl
 
 	RET
 getHandValue ENDP
@@ -204,6 +209,7 @@ getHandValue ENDP
 
 
 
+<<<<<<< HEAD
 
 showdealerHand PROC
 	pushad
@@ -238,6 +244,18 @@ showdealerHand ENDP
 
 
 
+=======
+testHand PROC
+	pushad
+
+	call getdealerHand
+	;mov eax, 1
+	;call setplayerhand
+	;call getplayerhand
+	;mov eax, 2
+	;call setplayerhand
+	;call getplayerhand
+>>>>>>> hand value
 
 
 
@@ -269,3 +287,17 @@ testit:
 	popad
 	RET
 testHand ENDP
+
+outputHand PROC
+	mov esi, offset handbuffer
+	out1:
+		mov al, [esi]
+		call getCardDisplay
+		mov edx, offset cardDisplayString
+		call writestring
+		call crlf
+		inc esi
+	loop out1
+
+	RET
+outputHand ENDP

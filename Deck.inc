@@ -8,39 +8,39 @@ topCard DB 0
 
 ;Test various deck procedures
 .CODE
-					TestDeck PROC
-						MOV ECX, 0
-						MOV EDI, offset Deck
+TestDeck PROC
+	pushad
+
+	MOV ECX, 0
+	MOV EDI, offset Deck
 	
-						s:
-						MOV EAX, 0
-						MOV AL, [EDI]
-						CALL GetCardDisplay
-						MOV EDX, OFFSET CardDisplayString
-						CALL WriteString
-						CALL CrLf
-						INC ECX
-						INC EDI
+	s:
+		MOV EAX, 0
+		MOV AL, [EDI]
+		CALL GetCardDisplay
+		MOV EDX, OFFSET CardDisplayString
+		CALL WriteString
+		CALL CrLf
+		INC ECX
+		INC EDI
+		CMP ECX, CARD_COUNT
+	JNE s
+	popad
+	RET
+TestDeck ENDP
 
-						CMP ECX, CARD_COUNT
-						JNE s
-						RET
-					TestDeck ENDP
+testDeal PROC
+	mov ecx, 10
+	deal10:
+		call dealCard
+		call getCardDisplay
+		MOV EDX, OFFSET CardDisplayString
+		CALL WriteString
+		call crlf
+	loop deal10
 
-					testDeal PROC
-						mov ecx, 10
-						deal10:
-							call dealCard
-							call getCardDisplay
-							MOV EDX, OFFSET CardDisplayString
-							CALL WriteString
-							call crlf
-						loop deal10
-
-						RET
-					testDeal ENDP
-
-
+	RET
+testDeal ENDP
 
 
 InitializeDeck PROC USES ECX ESI
@@ -248,3 +248,16 @@ dealCard PROC USES EBX ESI
 	inc topCard
 	RET
 dealCard ENDP
+
+getCardValue PROC
+	call getCardNumber
+	.IF eax == 0
+		mov eax, 11
+	.ELSEIF (eax == 11) || (eax ==12)
+		mov eax, 10
+	.ELSEIF (eax < 10)
+		inc eax
+	.ENDIF
+
+	RET
+getCardValue ENDP
