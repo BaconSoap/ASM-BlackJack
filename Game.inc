@@ -18,6 +18,7 @@ RunGame PROC
 		CALL InitializeDeck
 		CALL ShuffleDeck		
 		CALL NameInput
+		MOV DealerBust, 0
 	;-------------------------------------------
 	
 	;Ask each player for an initial bet, loops as many times as necessary
@@ -63,11 +64,23 @@ RunGame PROC
 			call Playerturn
 			inc eax
 		loop taketurn
-	
+
 	call outputplayers
 	call dealerturn
 	call showdealerhand
-		
+			
+	;compare each player hand value to dealer hand value if dealer busted this is skipped
+	;CMP DealerBust, 1
+	;JE dealerlose
+	;	mov EAX, 1
+	;	mov ecx, Playercount
+	;	compare:
+	;		mov currentplayer, al
+	;		call Playerturn
+	;		inc eax
+	;	loop compare
+	;dealerlose:
+
 ret
 RunGame ENDP
 
