@@ -1,40 +1,3 @@
-COMMENT !
-
-Window prompt overtop of table for number of players 1-5
-Window prompt overtop of table prompt for player names 
-Each player starts with $300
-	Either in text or with chips
-	Chips values are 
-	Red $5
-	Blue $10
-	Green $25
-	Orange $50
-Betting goes around the table from player 1 to the last player there is a $10 minimum bet and maximum of the players total amount of money.  Window prompt for bet amount.  
-
-One card is dealt to each the players face up starting from the bottom right of the screen to the bottom left one at a time.  One face up card is dealt to the dealer.  
-A second face up card is dealt to the players in the same order followed by one face down card to the dealer.  
-
-Each player gets the choice to stand, hit, split, double down.  
-Stand means that the player does not take anymore cards and his decisions are done.  
-Hit is to take another card and then the player has the choice to stand, hit, or double down after that.  
-Split is a choice if the players original two cards have the same value, the player can choose to split and make two hands being dealt a second card for each of 
-the originals and betting an equal amount as the original bet for the new second hand.  The player then plays both hands separately. 
-Double down means that the player doubles his bet, takes one more card and stands.
-
-The dealer plays his cards by always standing if the value is 17 or greater and always hitting if the value is 16 and under. 
-
-The Goal of the game is to get a card value of 21 or to have a better hand than the dealer.  If the cards total to more than 21 that is a bust and that player loses his bet.  
-For the players that have values under 21 the hand is then compared to the dealers hand.  If the player has a lower value than the dealer they lose their bet.  
-If the values are the same it is a push and the player receives their bet back.  If the value is greater than the dealer they win the hand and receives twice their bet back.  
-If the dealer busts all players that did not bust win and receive twice their bet back.
-
-After each round the players banks are updated based on their winning or losing the player then has the choice to leave the table or place a bet.  
-
-Once bets are placed a full 52 card deck is shuffled and dealt to the remaining players.  
-
-
-!
-
 .data
 	rulesPrompt BYTE "Each player starts with $300", 0dh, 0ah
 
@@ -74,62 +37,54 @@ Once bets are placed a full 52 card deck is shuffled and dealt to the remaining 
 
 	help BYTE "Help box", 0
 
-	card1Prompt BYTE "enter card 1:  ", 0
-	card2Prompt BYTE "enter card 2: ", 0
-	dealerPrompt BYTE "enter dealer card:  ", 0
-
-	card1 DWORD 2
-	card2 DWORD 2
-	dealerCard DWORD 3
-	total DWORD 0
+	dealerCard BYTE ?
 
 .code
 
-testHelp PROC
-	mov ecx, 10
-	hintloop:
-		mov edx, offset card1Prompt
-		call WriteString
-		call readInt
-		mov card1, eax
+;pass player number in EAX
+hint PROC 
+	PushAD
+	call setplayerhand
+	mov bl, dealer.phand
+	mov dealercard, bl
 
-		mov edx, offset card2Prompt
-		call WriteString
-		call readInt
-		mov card2, eax
+	mov esi, 0
+			;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+		
+	Mov cl, (Playerstructure PTR playerarray[esi]).cardCount
+	mov al, (Playerstructure PTR playerarray[esi]).phand
+	call getCardnumber
+	mov ah, al
+	mov al, (Playerstructure PTR playerarray[esi]).phand[1]
+	call getcardnumber
 
-		mov edx, offset dealerPrompt
-		call WriteString
-		call readInt
-		mov dealerCard, eax
-		call Crlf
+	;al is value of card 2
+	;ah is value of card 1
+	;cl is card count
+
+	.if (cl ==2) && (ah == al)
+		JE pair
+	.endif
+
+	call gethandvalue
+	mov bl, handType
+
+	;al is hand value
+	;bl is soft or hard
 	
-		call hint
-	loop hintloop
-
-	RET
-testHelp ENDP
-
-hint PROC USES EAX EBX
-	mov eax, card1
-	mov ebx, card2
-	mov total, eax
-	add total, ebx
-
-	cmp eax, ebx
-	JE pair
-
-	cmp card1, 11
-	JE soft
-	cmp card2, 11
+	cmp bl, 'S'
 	JE soft
 	jmp hard
 
 	soft:
-		cmp total, 15
+		cmp al, 15
 		JBE hit
 		
-		cmp total, 18
+		cmp al, 18
 		JBE soft1618
 		
 		jmp stand
@@ -140,16 +95,16 @@ hint PROC USES EAX EBX
 			jmp hit
 
 	hard:
-		cmp total, 8
+		cmp al, 8
 		JBE hit
 
-		cmp total, 9
+		cmp al, 9
 		JE hard9
 
-		cmp total, 11
+		cmp al, 11
 		JBE hard1011
 
-		cmp total, 16
+		cmp al, 16
 		JBE hard1216
 
 		jmp stand
@@ -160,8 +115,7 @@ hint PROC USES EAX EBX
 			jmp hit
 
 		hard1011:
-			mov eax, total
-			cmp eax, dealerCard
+			cmp al, dealerCard
 			JA doubleDown
 			jmp hit
 
@@ -171,31 +125,31 @@ hint PROC USES EAX EBX
 			jmp hit
 
 	pair: 
-		cmp eax, 2
+		cmp al, 2
 		JE twos
 
-		cmp eax, 3
+		cmp al, 3
 		JE threes
 
-		cmp eax, 4
+		cmp al, 4
 		JE fours
 
-		cmp eax, 5
+		cmp al, 5
 		JE fives
 
-		cmp eax, 6
+		cmp al, 6
 		JE sixes
 
-		cmp eax, 7
+		cmp al, 7
 		JE sevens
 
-		cmp eax, 8
+		cmp al, 8
 		JE Split
 
-		cmp eax, 9
+		cmp al, 9
 		JE nines
 
-		cmp eax, 11
+		cmp al, 11
 		JE Split
 
 		jmp stand
@@ -222,9 +176,8 @@ hint PROC USES EAX EBX
 			jmp split
 
 		fives:
-			mov eax, total
-			cmp eax, dealerCard
-			JA doubleDown
+			cmp dealerCard, 10
+			JB doubleDown
 			jmp hit
 
 		sixes:
@@ -260,7 +213,7 @@ hint PROC USES EAX EBX
 	
 	endit:
 
-
+	PopAD
 	RET
 hint ENDP
 
@@ -303,3 +256,26 @@ doubleDownHint PROC USES EBX EDX
 
 	RET
 doubleDownHint ENDP
+
+.data
+	type1 BYTE "You have a hard ",0
+	type2 BYTE "You have a soft ",0
+
+.code
+handTypePrompt PROC
+	pushad
+	.IF handtype == 'H'
+		mov edx, offset type1
+	.ELSE
+		mov edx, offset type2
+	.ENDIF
+	call writeString
+	mov eax, 1
+	call setplayerhand
+	call gethandvalue
+	call writedec
+	call crlf
+	
+	popad
+	ret
+handTypePrompt ENDP

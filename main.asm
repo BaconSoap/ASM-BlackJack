@@ -13,6 +13,8 @@ INCLUDE Hand.inc
 INCLUDE Deck.inc
 INCLUDE Game.inc
 INCLUDE joeproc.inc
+;INCLUDE help.inc
+
 .data
 Playerstructure STRUCT
 		Pname BYTE 30 dup(?)
@@ -27,7 +29,7 @@ HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed thr
 CardBuffer DB 52 ;CardBuffer will hold a single card
 
 
-PlayerArray PlayerStructure 5 DUP(<>)
+PlayerArray PlayerStructure 10 DUP(<>)
 Dealer Playerstructure<"Dealer",,,,>
 
 

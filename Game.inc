@@ -2,9 +2,11 @@
 welcomeMsg BYTE "Welcome to the wonderful world of BlackJack!",0dh,0ah,0
 SelectionMsg Byte "Please select one of the following",0dh,0ah
 			 BYTE "1. HIT ",0dh,0ah
-			 BYTE "2. STAY ",0dh,0ah
+			 BYTE "2. STAND ",0dh,0ah
 			 BYTE "3. DOUBLE DOWN ",0dh,0ah
-			 BYTE "4. SPLIT ",0dh,0ah,0
+			 BYTE "4. SPLIT ",0dh,0ah
+			 BYTE "5. RULES ", 0dh, 0ah
+			 BYTE "6. HINT ", 0dh, 0ah, 0
 Bustedmsg BYTE "Sorry, you busted",0dh,0ah,0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
@@ -129,8 +131,14 @@ turnloop:
 	.elseif playerchoice == 4
 		pop eax
 		;splitting goes here
+	.elseif playerchoice == 5  ;rules
+		pop eax
+		;call rules
+	.elseif playerchoice == 6  ;hint
+		pop eax
+		;call hint
+	.endif	
 
-		.endif	
 		push eax
 		call getplayerhand
 		call gethandvaluenew

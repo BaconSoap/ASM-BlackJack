@@ -340,3 +340,50 @@ PrintHandBuffer PROC USES ESI EAX EDX
 	EndLoop:
 	RET
 PrintHandBuffer ENDP
+
+
+;player array doubled in size so player 1's split hand will go to fake player 6, 2->7...5->10
+;pass player number in eax
+SplitHand PROC
+	pushad
+
+	mov edx, 0
+	mov edi, offset handBuffer
+	mov esi, 0
+	mov ebx, 0
+	push eax	
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add ebx, TYPE Playerstructure
+		add edx, TYPE Playerstructure
+		dec eax
+	.endw
+
+	add ecx, 5
+	splitloop:
+		add edx, TYPE Playerstructure
+	loop splitloop
+
+	lea edi, (Playerstructure PTR playerarray[ebx]).bet
+	add [edi], edi
+	lea esi, (Playerstructure PTR playerarray[ebx]).bankacc
+	mov eax, [edi]
+	sub [esi], eax
+	lea esi, (Playerstructure PTR playerarray[ebx]).phand
+	inc esi
+	lea edi, (Playerstructure PTR playerarray[edx]).phand
+	mov eax, [edi]
+	xchg [esi], eax
+	mov [edi], eax
+
+
+	pop eax
+	call dealcard
+	call addcardplayer
+	add eax, 5
+	call dealcard
+	call addcardplayer
+
+	popad
+	RET
+SplitHand ENDP
