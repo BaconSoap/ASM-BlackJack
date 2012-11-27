@@ -26,10 +26,10 @@ RunGame PROC
 	;Ask each player for an initial bet, loops as many times as necessary
 		MOV EAX, 1 
 		MOV ECX, PlayerCount
-		;BettingLoop:
-		;	CALL placebet
-		;	INC EAX
-		;Loop BettingLoop
+		BettingLoop:
+			CALL placebet
+			INC EAX
+		Loop BettingLoop
 
 	;initial deal for dealer
 		MOV ECX, 2
@@ -72,16 +72,38 @@ RunGame PROC
 	call showdealerhand
 			
 	;compare each player hand value to dealer hand value if dealer busted this is skipped
-	;CMP DealerBust, 1
-	;JE dealerlose
-	;	mov EAX, 1
-	;	mov ecx, Playercount
-	;	compare:
-	;		mov currentplayer, al
-	;		call Playerturn
-	;		inc eax
-	;	loop compare
-	;dealerlose:
+	CMP DealerBust, 1
+	JE dealerlose
+		mov EAX, 1
+		mov ecx, Playercount
+		compare:
+			mov currentplayer, al
+			call compareHand
+			inc eax
+		loop compare
+		jmp endround
+
+	dealerlose:
+		mov EAX, 1
+		mov ecx, Playercount
+		checkPlayer:
+			mov currentplayer, al
+			push eax
+			call getplayerhand
+			call gethandvalue
+			.IF (al<=21)
+				pop eax
+				call playerWin
+			.ElSE 
+				pop eax
+				call playerLose
+			.ENDIF
+
+			inc eax
+		loop checkPlayer
+
+	endround:
+	call outputplayers
 
 ret
 RunGame ENDP
@@ -133,10 +155,10 @@ turnloop:
 		;splitting goes here
 	.elseif playerchoice == 5  ;rules
 		pop eax
-		;call rules
+		call rules
 	.elseif playerchoice == 6  ;hint
 		pop eax
-		;call hint
+		call hint
 	.endif	
 
 		push eax

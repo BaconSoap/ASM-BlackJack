@@ -13,7 +13,7 @@ INCLUDE Hand.inc
 INCLUDE Deck.inc
 INCLUDE Game.inc
 INCLUDE joeproc.inc
-;INCLUDE help.inc
+INCLUDE help.inc
 
 .data
 Playerstructure STRUCT

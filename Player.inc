@@ -129,6 +129,8 @@ PlaceBet PROC USES ECX EDX ESI
 	call writeString
 	lea edx, (Playerstructure PTR playerarray[esi]).Pname
 	call writeString
+	mov edx, offset betprompt2
+	call writestring
 	push eax
 	call readInt
 	mov ebx, eax
@@ -199,3 +201,21 @@ loseBet PROC USES ESI EAX EBX
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
 	RET
 loseBet ENDP
+
+pushBet PROC USES ESI EAX EBX
+	mov esi, 0
+	push eax
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	;sub ebx to players bank account
+	MOV EBX, (Playerstructure PTR playerarray[esi]).bet
+	;calls deposit twice so it replaces the initial bet and then the amount won
+		pop eax
+		CALL deposit
+	;sets bet to 0
+	MOV (Playerstructure PTR playerarray[esi]).bet, 0
+	RET
+pushBet ENDP

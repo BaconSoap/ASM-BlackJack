@@ -4,6 +4,7 @@
 DEALERCARDCOUNT DB 2
 total Dword ?
 aceCount DWord ?
+handType BYTE 'H'
 
 
 .code
@@ -387,3 +388,63 @@ SplitHand PROC
 	popad
 	RET
 SplitHand ENDP
+
+.data
+	a1 BYTE "player ",0
+	a2 BYTE "dealer ", 0
+
+.code
+;pass the player number in EAX to compare to dealer hand
+compareHand PROC
+	pushad
+	push eax
+	call getplayerhand
+	call gethandvaluenew
+	mov bl, al
+	call getdealerhand
+	call gethandvaluenew
+	.IF(al<bl && bl<=21)
+		pop eax
+		call playerWin
+	.ELSEIF(al==bl)
+		pop eax
+		call playerPush
+	.ELSE
+		pop eax
+		call playerLose
+	.ENDIF
+
+
+	popad
+	RET
+compareHand ENDP
+
+.data
+	winPrompt BYTE "You have won this hand", 0dh, 0ah, 0
+	losePrompt BYTE "You have lost this hand", 0dh, 0ah, 0
+	pushPrompt BYTE "You have pushed this hand", 0dh, 0ah, 0
+
+.code
+;pass winning player number in EAX
+playerWin PROC
+	call winbet
+	mov edx, offset winPrompt
+	call writestring
+
+	RET
+playerWin ENDP
+
+playerLose PROC
+	mov edx, offset losePrompt
+	call writeString
+
+	RET
+playerLose ENDP
+
+playerPush PROC
+	call pushBet
+	mov edx, offset pushPrompt
+	call writeString
+
+	ret
+playerPush ENDP
