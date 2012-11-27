@@ -5,6 +5,7 @@ SelectionMsg Byte "Please select one of the following",0dh,0ah
 			 BYTE "2. STAY ",0dh,0ah
 			 BYTE "3. DOUBLE DOWN ",0dh,0ah
 			 BYTE "4. SPLIT ",0dh,0ah,0
+Bustedmsg BYTE "Sorry, you busted",0dh,0ah,0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
 .code
@@ -64,10 +65,13 @@ RunGame PROC
 		loop taketurn
 	
 	call outputplayers
+	call dealerturn
 	call showdealerhand
 		
 ret
 RunGame ENDP
+
+
 
 
 PlayerTurn PROC
@@ -115,10 +119,16 @@ turnloop:
 
 		.endif	
 		push eax
+		call getplayerhand
 		call gethandvaluenew
-		call writeint
+		cmp eax, 21
+		JG Busted
 		pop eax
 		JMP turnloop
+	Busted:
+		MOV EDX, OFFSET Bustedmsg
+		call writestring
+		pop eax
 	endturn:
 popad
 ret

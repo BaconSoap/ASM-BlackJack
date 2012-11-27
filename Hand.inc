@@ -1,6 +1,6 @@
 .data
 ;using to test
-DealerHand DB 1,3, 51, 52
+;DealerHand DB 1,3, 51, 52
 DEALERCARDCOUNT DB 2
 total Dword ?
 aceCount DWord ?
@@ -204,11 +204,11 @@ getHandValue PROC
 	RET
 getHandValue ENDP
 
-;Takes in EAX player #
+;Takes handbuffer and returns score for it
 ;Outputs player's score in EAX
 GetHandValueNew PROC USES ESI 
 	
-	CALL getPlayerHand
+	;CALL getPlayerHand
 	MOV ESI, OFFSET HandBuffer
 	MOV total, 0
 	MOV aceCount, 0
