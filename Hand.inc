@@ -2,8 +2,9 @@
 ;using to test
 DealerHand DB 1,3, 51, 52
 DEALERCARDCOUNT DB 2
-total DD ?
-aceCount DD ?
+total Dword ?
+aceCount DWord ?
+
 
 .code
 
@@ -214,31 +215,34 @@ GetHandValueNew PROC USES ESI
 
 	
 	StartFirstLoop:
+	;call dumpregs
 		MOV EAX, 0
 		MOV AL, [ESI]
 		CMP EAX, 52
+
 		JE StartAceLoop
 		CALL getCardNumber
 
 		CMP EAX, 0
 		JE IHateAces
+
 		CMP EAX, 10
 		JGE ClampToTen
 		INC EAX
 		JMP AddToTotal
 		IHateAces:
-		INC aceCount
-		MOV EAX, 11
-		JMP AddToTotal
+			INC aceCount
+			MOV EAX, 11
+			JMP AddToTotal
 
 		ClampToTen:
-		MOV EAX, 10
-		JMP AddToTotal
+			MOV EAX, 10
+			JMP AddToTotal
 
 		AddToTotal:
-		ADD total, EAX
-		INC ESI
-		JMP StartFirstLoop
+			ADD total, EAX
+			INC ESI
+			JMP StartFirstLoop
 
 	StartAceLoop:
 		CMP aceCount, 0
@@ -250,10 +254,12 @@ GetHandValueNew PROC USES ESI
 		JMP StartAceLoop
 		SubtractTen:
 		SUB total, 10
+		DEC aceCount
 		JMP StartAceLoop
+		
 	EndOfProc:
 	MOV EAX, total
-	
+
 	RET
 GetHandValueNew ENDP
 
@@ -268,16 +274,13 @@ showdealerHand PROC
 loopen:
 	mov eax, 0
 	mov al, [esi]
-	;call writeint
 	cmp al, 52
 	JE endstuff
 	call getcarddisplay
 	mov edx, offset carddisplaystring
 	call writestring
 	call crlf
-	;add esi, 4
 	inc esi
-	;call dumpregs
 
 	jmp loopen
 
@@ -292,7 +295,6 @@ showdealerHand ENDP
 
 testHand PROC USES ESI EAX EDX
 	pushad
-	call writeint
 	call crlf
 	call getplayerhand
 	mov esi, offset handBuffer
@@ -301,7 +303,6 @@ testHand PROC USES ESI EAX EDX
 testit:
 	mov eax, 0
 	mov al, [esi]
-	;call writeint
 	cmp al, 52
 	JE endit
 	call getcarddisplay

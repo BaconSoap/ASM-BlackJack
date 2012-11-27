@@ -39,7 +39,6 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 			mov edx, offset namePrompt
 			call WriteString
 			mov eax, ebx
-			call WriteDec
 			mov eax, ' '
 			call WriteChar
 

@@ -2,11 +2,11 @@
 welcomeMsg BYTE "Welcome to the wonderful world of BlackJack!",0dh,0ah,0
 SelectionMsg Byte "Please select one of the following",0dh,0ah
 			 BYTE "1. HIT ",0dh,0ah
-			 BYTE "2. PASS ",0dh,0ah
+			 BYTE "2. STAY ",0dh,0ah
 			 BYTE "3. DOUBLE DOWN ",0dh,0ah
 			 BYTE "4. SPLIT ",0dh,0ah,0
 playerChoice BYTE 0
-
+CURRENTPLAYER BYTE 0
 .code
 
 RunGame PROC
@@ -58,11 +58,12 @@ RunGame PROC
 		mov EAX, 1
 		mov ecx, Playercount
 		taketurn:
-			;call testhand
+			mov currentplayer, al
 			call Playerturn
 			inc eax
 		loop taketurn
-			call outputplayers
+	
+	call outputplayers
 	call showdealerhand
 		
 ret
@@ -73,11 +74,15 @@ PlayerTurn PROC
 pushad
 
 turnloop:
+	push EAX
+	movzx eax, currentplayer
+	call testhand
+
 	MOV EDX, offset selectionMsg
 	CALL WriteString
 	CALL Crlf
-	push EAX
 	call readint
+
 	MOV playerchoice, al
 
 	.if playerchoice == 1
@@ -91,6 +96,7 @@ turnloop:
 	.elseif playerchoice == 2
 		pop eax
 		JMP endturn
+
 		;double down, only allows you to hit once
 	.elseif playerchoice == 3
 		pop eax
@@ -100,12 +106,18 @@ turnloop:
 		movzx ebx, al
 		pop eax
 		call addcardplayer
+		movzx eax, currentplayer
+		call testhand
 		jmp endturn
 	.elseif playerchoice == 4
 		pop eax
 		;splitting goes here
 
-		.endif
+		.endif	
+		push eax
+		call gethandvaluenew
+		call writeint
+		pop eax
 		JMP turnloop
 	endturn:
 popad
