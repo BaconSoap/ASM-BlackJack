@@ -474,7 +474,8 @@ SplitHand PROC
 
 	lea esi, (Playerstructure PTR playerarray[ebx]).bet
 	mov al, [esi]
-	add [esi], al
+	lea esi, (Playerstructure PTR playerarray[ebx]).splitbet
+	mov [esi], al
 	lea esi, (Playerstructure PTR playerarray[ebx]).bankacc
 	sub [esi], eax
 	lea esi, (Playerstructure PTR playerarray[ebx]).phand
@@ -565,8 +566,7 @@ playerPush PROC USES EDX
 	ret
 playerPush ENDP
 
-checkSplit PROC
-	pushad
+checkSplit PROC USES EAX ESI
 	
 	mov eax, 0
 	mov al, currentplayer
@@ -578,12 +578,6 @@ checkSplit PROC
 		dec eax
 	.endw
 	mov bl, (Playerstructure PTR playerarray[esi]).splitBool 
-	.IF(bl == 1)
-		call crlf
-		call testSplitHand
-
-	.ENDIF
-
-	popad
+		
 	RET
 checkSplit ENDP

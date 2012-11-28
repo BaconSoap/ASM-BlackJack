@@ -173,6 +173,73 @@ turnloop:
 		call writestring
 		pop eax
 	endturn:
+
+
+	call checkSplit  
+
+	.IF (bl == 1)
+	turnloopSplit:
+	push EAX
+	movzx eax, currentplayer
+	call testSplitHand
+
+	MOV EDX, offset selectionMsg
+	CALL WriteString
+	CALL Crlf
+	call readint
+
+	MOV playerchoice, al
+
+	.if playerchoice == 1
+		CALL DealCard
+		movzx ebx, al
+		pop eax
+		call addcardplayerSplit
+		;checkhand value, jump to end turn if over 21
+
+
+	.elseif playerchoice == 2
+		pop eax
+		JMP endturnSplit
+
+		;double down, only allows you to hit once
+	.elseif playerchoice == 3
+		pop eax
+		call doublebet
+		push eax
+		call dealcard
+		movzx ebx, al
+		pop eax
+		call addcardplayerSplit
+		movzx eax, currentplayer
+		call testSplithand
+		jmp endturnSplit
+	.elseif playerchoice == 4
+		pop eax
+		;call splitHand
+	.elseif playerchoice == 5  ;rules
+		pop eax
+		call rules
+	.elseif playerchoice == 6  ;hint
+		pop eax
+		call hint
+	.endif	
+
+		push eax
+		call getplayerSplithand
+		call gethandvaluenew
+		cmp eax, 21
+		JG BustedSplit
+		pop eax
+		JMP turnloopSplit
+	BustedSplit:
+		MOV EDX, OFFSET Bustedmsg
+		call writestring
+		pop eax
+	endturnSplit:
+
+	.ENDIF
+
 popad
 ret
 PlayerTurn ENDP

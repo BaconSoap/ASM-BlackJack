@@ -24,6 +24,7 @@ Playerstructure STRUCT
 		CardCount BYTE 0
 		splitHand DB HAND_SIZE DUP(52)
 		splitBool DB 0
+		splitBet DWORD 0
 Playerstructure ends
 
 
