@@ -78,6 +78,7 @@ display PROC USES EBX ECX EDX ESI EAX EDI
 			CALL WriteDec
 			CALL Crlf
 
+
 	RET
 display ENDP
 

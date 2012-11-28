@@ -152,7 +152,7 @@ turnloop:
 		jmp endturn
 	.elseif playerchoice == 4
 		pop eax
-		;splitting goes here
+		call splitHand
 	.elseif playerchoice == 5  ;rules
 		pop eax
 		call rules

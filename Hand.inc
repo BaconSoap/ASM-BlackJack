@@ -86,6 +86,39 @@ getPlayerHand PROC USES ECX ESI EDI EAX EBX
 	RET
 getPlayerHand ENDP
 
+;pass player number in EAX places that players hand into handbuffer
+getPlayerSplitHand PROC USES ECX ESI EDI EAX EBX
+	mov ecx, 0
+	mov edi, offset handBuffer
+	mov esi, 0
+	mov ebx, 0
+	push eax	
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add ebx, TYPE Playerstructure
+		dec eax
+	.endw
+	lea esi, (Playerstructure PTR playerarray[ebx]).SplitHand
+	pop eax
+
+	
+	getSplitHand:
+	push eax
+
+	copySplitGet:
+	MOV al, [ESI]
+	MOV [EDI], al
+
+	INC ECX
+	INC ESI
+	INC EDI
+	CMP ECX, HAND_SIZE
+	JNE copySplitGet
+
+	pop eax
+		
+	RET
+getPlayerSplitHand ENDP
 
 ;pass player number in EAX places handbuffer into that players hand
 setPlayerHand PROC USES ECX EDI ESI EAX EBX
@@ -103,10 +136,10 @@ setPlayerHand PROC USES ECX EDI ESI EAX EBX
 	pop eax
 
 	
-	getHand:
+	SetHand:
 	push eax
 
-	copyGet:
+	copySet:
 	MOV al, [EDI]
 	MOV [ESI], al
 
@@ -114,14 +147,46 @@ setPlayerHand PROC USES ECX EDI ESI EAX EBX
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
-	JNE copyGet
+	JNE copySet
 
 	pop eax
 		
 	RET
 setPlayerHand ENDP
 
+;pass player number in EAX places handbuffer into that players hand
+setPlayerSplitHand PROC USES ECX EDI ESI EAX EBX
+	mov ecx, 0
+	mov edi, offset handBuffer
+	mov esi, 0
+	mov ebx, 0
+	push eax	
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add ebx, TYPE Playerstructure
+		dec eax
+	.endw
+	lea esi, (Playerstructure PTR playerarray[ebx]).SplitHand
+	pop eax
 
+	
+	SetSplitHand:
+	push eax
+
+	copySplitSet:
+	MOV al, [EDI]
+	MOV [ESI], al
+
+	INC ECX
+	INC ESI
+	INC EDI
+	CMP ECX, HAND_SIZE
+	JNE copySplitSet
+
+	pop eax
+		
+	RET
+setPlayerSplitHand ENDP
 
 ;pass player number in EAX and card to add in EBX
 addCardPlayer PROC USES ECX ESI EAX
@@ -142,6 +207,26 @@ endadd:
 
 	RET
 addCardPlayer ENDP
+
+;pass player number in EAX and card to add in EBX
+addCardPlayerSplit PROC USES ECX ESI EAX
+	call getPlayerSplitHand
+	mov esi, offset handbuffer
+
+one:
+
+	mov cl, [esi]
+	cmp cl, 52
+	JE endadd
+	inc esi
+	jmp one
+
+endadd:
+	mov [esi], bl
+	call setPlayerSplitHand
+
+	RET
+addCardPlayerSplit ENDP
 
 ; card to add in EBX
 addCardDealer PROC USES ECX ESI EAX
@@ -294,7 +379,7 @@ showdealerHand ENDP
 
 
 
-testHand PROC USES ESI EAX EDX
+testHand PROC 
 	pushad
 	call crlf
 	call getplayerhand
@@ -316,11 +401,40 @@ testit:
 
 	jmp testit
 
-	endit:
+endit:
+	call checkSplit
 
 	popad
 	RET
 testHand ENDP
+
+testSplitHand PROC 
+	pushad
+	call crlf
+	call getplayerSplithand
+	mov esi, offset handBuffer
+	call crlf
+	call crlf
+testitsplit:
+	mov eax, 0
+	mov al, [esi]
+	cmp al, 52
+	JE enditsplit
+	call getcarddisplay
+	mov edx, offset carddisplaystring
+	call writestring
+	call crlf
+	;add esi, 4
+	inc esi
+	;call dumpregs
+	jmp testitsplit
+
+
+enditsplit:
+
+	popad
+	RET
+testSplitHand ENDP
 
 
 PrintHandBuffer PROC USES ESI EAX EDX
@@ -343,8 +457,7 @@ PrintHandBuffer PROC USES ESI EAX EDX
 PrintHandBuffer ENDP
 
 
-;player array doubled in size so player 1's split hand will go to fake player 6, 2->7...5->10
-;pass player number in eax
+;pass player number in eax split card moves to split array split and phand are dealt another card
 SplitHand PROC
 	pushad
 
@@ -356,34 +469,37 @@ SplitHand PROC
 	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
 	.while (eax > 1)
 		add ebx, TYPE Playerstructure
-		add edx, TYPE Playerstructure
 		dec eax
 	.endw
 
-	add ecx, 5
-	splitloop:
-		add edx, TYPE Playerstructure
-	loop splitloop
-
-	lea edi, (Playerstructure PTR playerarray[ebx]).bet
-	add [edi], edi
+	lea esi, (Playerstructure PTR playerarray[ebx]).bet
+	mov al, [esi]
+	add [esi], al
 	lea esi, (Playerstructure PTR playerarray[ebx]).bankacc
-	mov eax, [edi]
 	sub [esi], eax
 	lea esi, (Playerstructure PTR playerarray[ebx]).phand
 	inc esi
-	lea edi, (Playerstructure PTR playerarray[edx]).phand
-	mov eax, [edi]
-	xchg [esi], eax
-	mov [edi], eax
+	mov al, [esi]
+	lea edi, (Playerstructure PTR playerarray[ebx]).splitHand
+	mov al, [edi]
+	xchg [esi], al
+	mov [edi], al
+	lea esi, (Playerstructure PTR playerarray[ebx]).splitBool
+	mov al, 1
+	mov [esi], al
 
 
+	call dealcard
+	movzx ebx, al
 	pop eax
-	call dealcard
 	call addcardplayer
-	add eax, 5
+
+
+	push eax
 	call dealcard
-	call addcardplayer
+	movzx ebx, al
+	pop eax
+	call addcardplayerSplit
 
 	popad
 	RET
@@ -426,7 +542,7 @@ compareHand ENDP
 
 .code
 ;pass winning player number in EAX
-playerWin PROC
+playerWin PROC USES EDX
 	call winbet
 	mov edx, offset winPrompt
 	call writestring
@@ -434,17 +550,40 @@ playerWin PROC
 	RET
 playerWin ENDP
 
-playerLose PROC
+playerLose PROC USES EDX
 	mov edx, offset losePrompt
 	call writeString
 
 	RET
 playerLose ENDP
 
-playerPush PROC
+playerPush PROC USES EDX
 	call pushBet
 	mov edx, offset pushPrompt
 	call writeString
 
 	ret
 playerPush ENDP
+
+checkSplit PROC
+	pushad
+	
+	mov eax, 0
+	mov al, currentplayer
+
+	mov esi, 0
+		;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	mov bl, (Playerstructure PTR playerarray[esi]).splitBool 
+	.IF(bl == 1)
+		call crlf
+		call testSplitHand
+
+	.ENDIF
+
+	popad
+	RET
+checkSplit ENDP

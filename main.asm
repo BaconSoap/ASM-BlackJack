@@ -22,6 +22,8 @@ Playerstructure STRUCT
 		Bankacc DWORD 300
 		phand DB HAND_SIZE DUP(52)
 		CardCount BYTE 0
+		splitHand DB HAND_SIZE DUP(52)
+		splitBool DB 0
 Playerstructure ends
 
 
@@ -29,7 +31,7 @@ HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed thr
 CardBuffer DB 52 ;CardBuffer will hold a single card
 
 
-PlayerArray PlayerStructure 10 DUP(<>)
+PlayerArray PlayerStructure 5 DUP(<>)
 Dealer Playerstructure<"Dealer",,,,>
 
 
