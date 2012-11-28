@@ -6,6 +6,9 @@
 	betPrompt BYTE "Enter the bet for ", 0
 	betPrompt2 BYTE ": ", 0
 
+	tooFewPeople BYTE "Too few players (2 min).",0Ah,0
+	tooManyPeople BYTE "Too many players (5 max).",0Ah,0
+
 .code
 
 ;displays all players in game
@@ -24,10 +27,20 @@ outputPlayers ENDP
 
 ;Start of game input number of players and names of each
 nameInput PROC USES EAX EBX ECX EDX ESI
+	getHeadCount:
 	mov edx, offset countPrompt
 	call WriteString
 	call ReadInt
 	mov playerCount, eax
+	.IF eax <= 1
+		mov edx,OFFSET tooFewPeople
+		call WriteString
+		jmp getHeadCount
+	.ELSEIF eax > 5
+		mov edx,OFFSET tooManyPeople
+		call WriteString
+		jmp getHeadCount
+	.ENDIF
 
 	mov ebx, 1
 
