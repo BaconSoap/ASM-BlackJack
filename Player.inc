@@ -165,6 +165,25 @@ doubleBet PROC USES EAX ESI EBX
 	RET
 doubleBet ENDP
 
+;for double down send player number in EAX
+doubleSplitBet PROC USES EAX ESI EBX
+	mov esi, 0
+	push eax
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	;double down doubles your bet 
+	MOV EBX, (Playerstructure PTR playerarray[esi]).Splitbet
+	ADD (Playerstructure PTR playerarray[esi]).bet, EBX
+	;withdraw amount from players bank | pops player number from eax so it withdraws from correct player
+	pop eax
+	CALL withdraw
+
+	RET
+doubleSplitBet ENDP
+
 
 ;send the winning player number in EAX
 winBet PROC USES ESI EAX EBX
@@ -187,6 +206,28 @@ winBet PROC USES ESI EAX EBX
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
 	RET
 winBet ENDP
+
+;send the winning player number in EAX
+winSplitBet PROC USES ESI EAX EBX
+	
+	
+	mov esi, 0
+	push eax
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	;sub ebx to players bank account
+	MOV EBX, (Playerstructure PTR playerarray[esi]).Splitbet
+	;calls deposit twice so it replaces the initial bet and then the amount won
+		pop eax
+		CALL deposit
+		CALL deposit
+	;sets bet to 0
+	MOV (Playerstructure PTR playerarray[esi]).Splitbet, 0
+	RET
+winSplitBet ENDP
 
 ;send the losing player number in EAX
 loseBet PROC USES ESI EAX EBX
@@ -220,3 +261,21 @@ pushBet PROC USES ESI EAX EBX
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
 	RET
 pushBet ENDP
+
+pushSplitBet PROC USES ESI EAX EBX
+	mov esi, 0
+	push eax
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	;sub ebx to players bank account
+	MOV EBX, (Playerstructure PTR playerarray[esi]).Splitbet
+	;calls deposit twice so it replaces the initial bet and then the amount won
+		pop eax
+		CALL deposit
+	;sets bet to 0
+	MOV (Playerstructure PTR playerarray[esi]).Splitbet, 0
+	RET
+pushSplitBet ENDP

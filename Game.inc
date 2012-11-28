@@ -79,6 +79,10 @@ RunGame PROC
 		compare:
 			mov currentplayer, al
 			call compareHand
+			call checkSplit
+			.IF(bl==1)
+				call compareSplitHand
+			.ENDIF
 			inc eax
 		loop compare
 		jmp endround
@@ -90,7 +94,7 @@ RunGame PROC
 			mov currentplayer, al
 			push eax
 			call getplayerhand
-			call gethandvalue
+			call gethandvaluenew
 			.IF (al<=21)
 				pop eax
 				call playerWin
@@ -99,6 +103,22 @@ RunGame PROC
 				call playerLose
 			.ENDIF
 
+			call checkSplit
+			.IF(bl==1)
+				call compareSplitHand
+				mov currentplayer, al
+				push eax
+				call getplayerSplithand
+				call gethandvaluenew
+				.IF (al<=21)
+					pop eax
+					call playerSplitWin
+				.ElSE 
+					pop eax
+					call playerLose
+				.ENDIF
+
+			.ENDIF
 			inc eax
 		loop checkPlayer
 
@@ -205,7 +225,7 @@ turnloop:
 		;double down, only allows you to hit once
 	.elseif playerchoice == 3
 		pop eax
-		call doublebet
+		call doubleSplitbet
 		push eax
 		call dealcard
 		movzx ebx, al

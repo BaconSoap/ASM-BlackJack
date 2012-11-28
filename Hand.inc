@@ -536,6 +536,30 @@ compareHand PROC
 	RET
 compareHand ENDP
 
+;pass the player number in EAX to compare to dealer hand
+compareSplitHand PROC
+	pushad
+	push eax
+	call getplayerSplithand
+	call gethandvaluenew
+	mov bl, al
+	call getdealerhand
+	call gethandvaluenew
+	.IF(al<bl && bl<=21)
+		pop eax
+		call playerSplitWin
+	.ELSEIF(al==bl)
+		pop eax
+		call playerSplitPush
+	.ELSE
+		pop eax
+		call playerLose
+	.ENDIF
+
+	popad
+	RET
+compareSplitHand ENDP
+
 .data
 	winPrompt BYTE "You have won this hand", 0dh, 0ah, 0
 	losePrompt BYTE "You have lost this hand", 0dh, 0ah, 0
@@ -565,6 +589,23 @@ playerPush PROC USES EDX
 
 	ret
 playerPush ENDP
+
+;pass winning player number in EAX
+playerSplitWin PROC USES EDX
+	call winSplitbet
+	mov edx, offset winPrompt
+	call writestring
+
+	RET
+playerSplitWin ENDP
+
+playerSplitPush PROC USES EDX
+	call pushSplitBet
+	mov edx, offset pushPrompt
+	call writeString
+
+	ret
+playerSplitPush ENDP
 
 checkSplit PROC USES EAX ESI
 	
