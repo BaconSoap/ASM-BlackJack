@@ -32,7 +32,7 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 	call WriteString
 	call ReadInt
 	mov playerCount, eax
-	.IF eax < 1
+	.IF SDWORD PTR eax < 1
 		mov edx,OFFSET tooFewPeople
 		call WriteString
 		jmp getHeadCount
