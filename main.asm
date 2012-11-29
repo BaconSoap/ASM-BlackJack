@@ -42,43 +42,10 @@ main PROC
 	CALL ClearRegs
 	CALL RunGame
 
-	;mov ebx, 5
-	;call getplayerhand
-	;call addcardplayer
-	;mov ebx,43
-	;call addcardplayer
-	call getdealerhand
-	mov ecx, 0
-	mov cl, dealer.CardCount
+	CALL getdealerhand
+	MOV ecx, 0
+	MOV cl, dealer.CardCount
 	
-	;call setplayerhand
-
-	;call getplayerhand
-	
-	
-
-;	CALL CRLF
-	
-;	MOV ESI, OFFSET HandBuffer
-;	MOV EAX, 0
-;	MOV [ESI], EAX
-;	MOV EAX, 13
-;	MOV [ESI+1], EAX
-;	MOV EAX, 34
-;	MOV [ESI+2], EAX
-;	MOV EAX, 51
-;	MOV [ESI+3], EAX
-;	MOV EAX, 52
-;	MOV [ESI+4], EAX
-;	MOV EAX, 0
-;	CALL SetPlayerHand
-;	CALL PrintHandBuffer
-	
-;	CALL GetHandValueNew
-;	CALL CRLF
-;	CALL WriteInt
-
-;	CALL CRLF
 exit
 main endp
 
