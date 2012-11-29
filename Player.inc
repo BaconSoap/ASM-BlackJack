@@ -8,6 +8,8 @@
 
 	tooFewPeople BYTE "Too few players (1 min).",0Ah,0
 	tooManyPeople BYTE "Too many players (5 max).",0Ah,0
+	NameTooLong BYTE "Name is too long, try again: ",0
+	NameTooShort BYTE "You must enter a name: ",0
 
 .code
 
@@ -54,11 +56,28 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 			mov eax, ebx
 			mov eax, ' '
 			call WriteChar
-
-			lea EDX, (Playerstructure PTR playerarray[edi]).pname
 		push ecx
+		lea EDX, (Playerstructure PTR playerarray[edi]).pname
 		mov ecx, SIZEOF (Playerstructure PTR playerarray[edi]).pname
+		tryNameAgain:
 		call ReadString
+		.IF eax > 30
+			push edx
+			push ecx
+			mov edx,OFFSET NameTooShort
+			call WriteString
+			pop ecx
+			pop edx
+			jmp tryNameAgain
+		.ELSEIF SDWORD PTR eax < 1
+			push edx
+			push ecx
+			mov edx,OFFSET NameTooShort
+			call WriteString
+			pop ecx
+			pop edx
+			jmp tryNameAgain
+		.ENDIF
 		inc ebx
 		pop ecx
 		add edi, TYPE Playerstructure
