@@ -10,6 +10,7 @@
 	tooManyPeople BYTE "Too many players (5 max).",0Ah,0
 	NameTooLong BYTE "Name is too long, try again: ",0
 	NameTooShort BYTE "You must enter a name: ",0
+	TenDollarMinimum BYTE "There is $10 bet minimum. Try again: ",0
 
 .code
 
@@ -164,10 +165,16 @@ PlaceBet PROC USES ECX EDX ESI
 	call writeString
 	mov edx, offset betprompt2
 	call writestring
+	TryBetAgain:
 	push eax
 	call readInt
 	mov ebx, eax
 	pop eax
+	.IF SDWORD PTR ebx < 10
+		mov edx,OFFSET TenDollarMinimum
+		call WriteString
+		jmp TryBetAgain
+	.ENDIF
 	;---------------------------
 
 	;add ebx to players bet
