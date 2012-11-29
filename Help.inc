@@ -1,30 +1,31 @@
 .data
 	rulesPrompt BYTE "Each player starts with $300", 0dh, 0ah
 
-		BYTE "Betting goes around the table from player 1 to the last player there is a $10 minimum bet and maximum of the players total amount of money.", 0dh, 0ah
-		BYTE "Window prompt for bet amount.", 0dh, 0ah
-
-		BYTE "One card is dealt to each the players face up starting from the bottom right of the screen to the bottom left one at a time.", 0dh, 0ah 
-		BYTE "One face up card is dealt to the dealer.", 0dh, 0ah  
-		BYTE "A second face up card is dealt to the players in the same order followed by one face down card to the dealer.", 0dh, 0ah  
-
-		BYTE "Each player gets the choice to stand, hit, split, double down.", 0dh, 0ah 
-		BYTE "Stand means that the player does not take anymore cards and his decisions are done.", 0dh, 0ah  
-		BYTE "Hit is to take another card and then the player has the choice to stand, hit, or double down after that.", 0dh, 0ah  
-		BYTE "Split is a choice if the players original two cards have the same value, the player can choose to split and make two hands being", 0dh, 0ah 
-		BYTE "dealt a second card for each of the originals and betting an equal amount as the original bet for the new second hand.", 0dh, 0ah
-		BYTE "The player then plays both hands separately.", 0dh, 0ah
-		BYTE "Double down means that the player doubles his bet, takes one more card and stands.", 0dh, 0ah
-
-		BYTE "The dealer plays his cards by always standing if the value is 17 or greater and always hitting if the value is 16 and under.", 0dh, 0ah 
-
 		BYTE "The Goal of the game is to get a card value of 21 or to have a better hand than the dealer.", 0dh, 0ah  
 		BYTE "If the cards total to more than 21 that is a bust and that player loses his bet.", 0dh, 0ah  
 		BYTE "For the players that have values under 21 the hand is then compared to the dealers hand.", 0dh, 0ah  
 		BYTE "If the player has a lower value than the dealer they lose their bet.", 0dh, 0ah  
 		BYTE "If the values are the same it is a push and the player receives their bet back.", 0dh, 0ah  
 		BYTE "If the value is greater than the dealer they win the hand and receives twice their bet back.", 0dh, 0ah  
-		BYTE "If the dealer busts all players that did not bust win and receive twice their bet back.", 0
+		BYTE "If the dealer busts all players that did not bust win and receive twice their bet back.", 0dh, 0ah
+		BYTE " ", 0dh, 0ah
+		BYTE "There is a $10 minimum bet and maximum of the players total amount of money.", 0dh, 0ah
+		BYTE " ", 0dh, 0ah
+		BYTE "Two cards are dealt to each the players at the start of a turn.", 0dh, 0ah 
+		BYTE "The dealer is dealt one face up card and one face down.", 0dh, 0ah   
+		BYTE " ", 0dh, 0ah
+		BYTE "Each player gets the choice to stand, hit, split, double down.", 0dh, 0ah 
+		BYTE "HIT is to take another card and then the player has the choice to stand, hit, or double down after that.", 0dh, 0ah  
+		BYTE "STAND means that the player does not take anymore cards and his turn is finished.", 0dh, 0ah  
+		BYTE "SPLIT is a choice if the players original two cards have the same value, the player can choose to split those two cards and make two hands", 0dh, 0ah 
+		BYTE "each hand is dealt a second card for each of the originals. The player bets an equal amount as the original bet for the new second hand.", 0dh, 0ah
+		BYTE "The player then plays both hands separately.", 0dh, 0ah
+		BYTE "DOUBLE DOWN means that the player doubles his bet, takes one more card and stands.", 0dh, 0ah
+		BYTE " ", 0dh, 0ah
+		BYTE "When each player is done with their turn the dealer takes their turn", 0dh, 0ah
+		BYTE "The dealer plays his cards by always standing if the value is 17 or greater and always hitting if the value is 16 and under.", 0
+
+		
 
 
 	splitPrompt BYTE "Your odds are best if you split this hand", 0
@@ -36,6 +37,7 @@
 	doubleDownPrompt BYTE "Your odds are best if you double down", 0
 
 	help BYTE "Help box", 0
+	hintPrompt BYTE "Hint",0
 
 	dealerCard BYTE ?
 	handValueHint BYTE ?
@@ -59,7 +61,7 @@ hint PROC
 
 	pop eax
 
-	call handtypePrompt
+	;call handtypePrompt
 
 	mov esi, 0
 			;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
@@ -241,7 +243,7 @@ rules PROC USES EBX EDX
 rules ENDP
 
 splitHint PROC USES EBX EDX
-	mov ebx, offset help
+	mov ebx, offset hintPrompt
 	mov edx, offset splitPrompt
 	call MsgBox
 
@@ -249,7 +251,7 @@ splitHint PROC USES EBX EDX
 splitHint ENDP
 
 hitHint PROC USES EBX EDX
-	mov ebx, offset help
+	mov ebx, offset hintPrompt
 	mov edx, offset hitPrompt
 	call MsgBox
 
@@ -257,7 +259,7 @@ hitHint PROC USES EBX EDX
 hitHint ENDP
 
 standHint PROC USES EBX EDX
-	mov ebx, offset help
+	mov ebx, offset hintPrompt
 	mov edx, offset standPrompt
 	call MsgBox
 
@@ -265,7 +267,7 @@ standHint PROC USES EBX EDX
 standHint ENDP
 
 doubleDownHint PROC USES EBX EDX
-	mov ebx, offset help
+	mov ebx, offset hintPrompt
 	mov edx, offset doubleDownPrompt
 	call MsgBox
 
@@ -273,8 +275,8 @@ doubleDownHint PROC USES EBX EDX
 doubleDownHint ENDP
 
 .data
-	type1 BYTE "You have a hard ",0
-	type2 BYTE "You have a soft ",0
+	type1 BYTE "You have a hard ", 0
+	type2 BYTE "You have a soft ", 0
 	dealercardprompt BYTE " and the dealer is showing a ", 0
 
 .code
@@ -285,6 +287,7 @@ handTypePrompt PROC
 	.ELSE
 		mov edx, offset type2
 	.ENDIF
+
 	call writeString
 	call getplayerhand
 	call gethandvalue
