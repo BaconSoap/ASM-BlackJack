@@ -1,6 +1,3 @@
-ANDREAS WAS HERE!!!!
-
-
 ASM-BlackJack
 =============
 
@@ -18,5 +15,4 @@ https://docs.google.com/document/d/1P_YfZ2JzKWWZDJ0FgIEke4lkW2CSOwyiBWnsrKCZ2yM/
 
 Tools
 -----
-
 GitHub for Windows: http://windows.github.com/
