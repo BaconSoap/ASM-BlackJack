@@ -36,7 +36,6 @@ PlayerArray PlayerStructure 5 DUP(<>)
 Dealer Playerstructure<"Dealer",,,,>
 
 
-
 .code 
 main PROC
 	CALL randomize

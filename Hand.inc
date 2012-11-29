@@ -205,6 +205,16 @@ endadd:
 	mov [esi], bl
 	call setPlayerHand
 
+	mov esi, 0
+			;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+		
+	inc (Playerstructure PTR playerarray[esi]).cardCount
+
+
 	RET
 addCardPlayer ENDP
 
@@ -251,6 +261,7 @@ addCardDealer ENDP
 
 
 getHandValue PROC
+	mov handType, 'H'
 	mov eax, 0
 	mov esi, offset handbuffer
 	mov ebx, 0
@@ -259,6 +270,9 @@ getHandValue PROC
 	sumHand:
 	call getCardValue
 	add bl, al
+	.IF(al==11)
+		mov handType, 'S'
+	.ENDIF
 	inc esi
 	mov al, [esi]
 	cmp al, 52
@@ -282,6 +296,7 @@ getHandValue PROC
 
 		changeto1:
 		sub bl, 10
+		mov handType, 'H'
 		jmp J2
 
 	endit:

@@ -38,15 +38,28 @@
 	help BYTE "Help box", 0
 
 	dealerCard BYTE ?
+	handValueHint BYTE ?
 
 .code
 
 ;pass player number in EAX
 hint PROC 
 	PushAD
-	call setplayerhand
-	mov bl, dealer.phand
-	mov dealercard, bl
+	
+	push eax
+	call getplayerhand
+	call gethandvalue
+	mov handValueHint, al
+
+	mov eax, 0
+	mov esi, offset dealer.phand
+	mov al,[esi]
+	call getcardvalue
+	mov dealercard, al
+
+	pop eax
+
+	call handtypePrompt
 
 	mov esi, 0
 			;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
@@ -57,10 +70,12 @@ hint PROC
 		
 	Mov cl, (Playerstructure PTR playerarray[esi]).cardCount
 	mov al, (Playerstructure PTR playerarray[esi]).phand
-	call getCardnumber
+	call getCardvalue
 	mov ah, al
+
+	mov eax, 0
 	mov al, (Playerstructure PTR playerarray[esi]).phand[1]
-	call getcardnumber
+	call getcardvalue
 
 	;al is value of card 2
 	;ah is value of card 1
@@ -260,6 +275,7 @@ doubleDownHint ENDP
 .data
 	type1 BYTE "You have a hard ",0
 	type2 BYTE "You have a soft ",0
+	dealercardprompt BYTE " and the dealer is showing a ", 0
 
 .code
 handTypePrompt PROC
@@ -270,10 +286,14 @@ handTypePrompt PROC
 		mov edx, offset type2
 	.ENDIF
 	call writeString
-	mov eax, 1
-	call setplayerhand
+	call getplayerhand
 	call gethandvalue
 	call writedec
+	mov edx, offset dealercardprompt
+	call writestring
+	mov eax, 0
+	mov al, dealerCard
+	call writeDec
 	call crlf
 	
 	popad
