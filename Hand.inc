@@ -282,7 +282,7 @@ GetHandValueNew PROC USES ESI EDX
 			.if (EDX == 1)
 				mov FCardVal, AL
 			.elseif (EDX == 2)
-				mov FCardVal, AL
+				mov SCardVal, AL
 			.endif
 
 		CMP EAX, 0

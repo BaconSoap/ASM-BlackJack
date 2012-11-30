@@ -159,6 +159,11 @@ choosemenu:
 	MOV EDX, offset selectionMsg
 	CALL WriteString
 	CALL Crlf
+	PUSH EAX
+	CALL GetPlayerHand
+	CALL GetHandValueNew
+	POP EAX
+
 	push eax
 	call readint
 
