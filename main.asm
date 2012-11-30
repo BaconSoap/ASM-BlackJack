@@ -38,6 +38,7 @@ COORD ENDS
 HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
 CardBuffer DB 52 ;CardBuffer will hold a single card
 BufferSize COORD <160, 100>
+DealerScore DB "Dealer Had: ", 0
 
 PlayerArray PlayerStructure 5 DUP(<>)
 Dealer Playerstructure<"Dealer",,,,>
@@ -61,6 +62,12 @@ main PROC
 	
 		gameloop:
 			CALL RunGame
+			call getdealerhand
+			call gethandvaluenew
+			MOV EDX, OFFSET DealerScore
+			CALL WriteString
+			CALL WriteDec
+			CALL CRLF
 			call resetphand
 			call resetPsplit
 			call resetdealer

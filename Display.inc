@@ -123,7 +123,7 @@ DisplayDealer PROC USES EDX ESI EAX
 	CALL SetToBaseX
 	inc esi
 
-	jmp loopen
+
 
 	endstuff:
 	CALL SetOtherColor
