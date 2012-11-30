@@ -63,6 +63,7 @@ main PROC
 			CALL RunGame
 			call resetphand
 			call resetPsplit
+			call resetdealer
 		loop gameloop
 	
 	CALL getdealerhand

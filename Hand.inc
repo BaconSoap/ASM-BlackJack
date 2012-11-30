@@ -716,7 +716,7 @@ pushad
 	mov ebx, 0
 	resettingdealer:
 
-	MOV [ESI], edi
+	MOV [ESI], edx
 
 	INC ebx
 	INC ESI
