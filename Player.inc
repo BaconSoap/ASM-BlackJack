@@ -12,7 +12,8 @@
 	NameTooShort BYTE "You must enter a name: ",0
 	TenDollarMinimum BYTE "There is $10 bet minimum. Try again: ",0
 	ProspectiveBet DWORD 0 ; http://support.microsoft.com/kb/74666
-	NotEnoughInBank BYTE "Not enough money in the bank. Try again: ",0
+	NotEnoughInBank BYTE "Not enough money in the bank. Bet less: ",0
+	CantBet BYTE "Can't bet, not enough money in the bank.",0Ah,0
 
 .code
 
@@ -190,7 +191,12 @@ PlaceBet PROC USES ECX EDX ESI
 	mov ProspectiveBet,eax
 	mov eax,0
 	mov eax,((PlayerStructure PTR PlayerArray[ESI]).BankAcc)
-	.IF SDWORD PTR ebx < 10
+	.IF ProspectiveBet > eax && SDWORD PTR ebx < 10
+		mov edx,OFFSET CantBet
+		call WriteString
+		;; FIXME go back to menu
+		ret
+	.ELSEIF SDWORD PTR ebx < 10
 		mov edx,OFFSET TenDollarMinimum
 		call WriteString
 		jmp TryBetAgain
