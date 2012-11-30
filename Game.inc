@@ -10,6 +10,7 @@ SelectionMsg Byte "Please select one of the following",0dh,0ah
 Bustedmsg BYTE "Sorry, you busted",0dh,0ah,0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
+IsSplitTurn		DB	0
 .code
 
 RunGame PROC
@@ -139,6 +140,7 @@ PlayerTurn PROC
 pushad
 
 turnloop:
+	MOV IsSplitTurn, 0
 	push EAX
 	movzx eax, currentplayer
 	call DisplayAll
@@ -203,9 +205,10 @@ turnloop:
 
 	.IF (bl == 1)
 	turnloopSplit:
+	MOV IsSplitTurn, 1
 	push EAX
 	movzx eax, currentplayer
-	call testSplitHand
+	call DisplayAll
 
 	MOV EDX, offset selectionMsg
 	CALL WriteString

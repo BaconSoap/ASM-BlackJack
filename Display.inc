@@ -8,6 +8,8 @@
 	BetDisplay			DB	"Bet: ", 0
 	BankDisplay			DB	"Balance: ", 0
 	CurrentValue		DB	"Hand Value: ", 0
+	SplitMsg				DB	"Split Hand: ", 0
+
 .code
 SetCurrentColor PROC USES EAX
 	MOVZX EAX, CurrentPlayerColor
@@ -27,7 +29,7 @@ SetDealerColor PROC USES EAX
 	RET
 SetDealerColor ENDP
 
-DisplayAll PROC USES EAX ECX ESI EDX
+DisplayAll PROC USES EAX ECX ESI EDX EBX
 	CALL SetOtherColor
 	CALL ClrScr
 	;CURRENTPLAYER
@@ -48,6 +50,10 @@ DisplayAll PROC USES EAX ECX ESI EDX
 		JMP ShowPlayer
 
 		ShowPlayer:
+		call checkSplit
+		.IF(IsSplitTurn==1)
+			CALL SetOtherColor
+		.ENDIF
 		MOV AL, CursorX
 		MOV BaseX, AL
 		;Show Name
@@ -81,7 +87,27 @@ DisplayAll PROC USES EAX ECX ESI EDX
 			POP EAX
 		;ShowCards
 			CALL SetToBaseX
+			PUSH EAX
+			MOV EAX, ECX
+			CALL GetPlayerHand
 			CALL ShowPlayerCards
+			
+			.IF(bl==1)
+				.IF(IsSplitTurn==1)
+					CALL SetCurrentColor
+				.ELSE
+					CALL SetOtherColor
+				.ENDIF
+				CALL SetToBaseX
+				call getplayerSplithand
+				MOV EDX, OFFSET CurrentValue
+				CALL WriteString
+				CALL GetHandValueNew
+				CALL WriteDec
+				CALL SetToBaseX
+				CALL ShowPlayerCards
+			.ENDIF
+			POP EAX
 		;Tab over and reset Y value
 			ADD BaseX, 23
 			MOV AL, BaseX
@@ -131,9 +157,7 @@ DisplayDealer PROC USES EDX ESI EAX
 DisplayDealer ENDP
 
 ShowPlayerCards PROC USES EAX ECX ESI EDX
-	MOV EAX, ECX
-	
-	call getplayerhand
+
 	mov esi, offset handBuffer
 
 	testit:
