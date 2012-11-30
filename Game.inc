@@ -14,8 +14,14 @@ CURRENTPLAYER BYTE 0
 
 RunGame PROC
 	;creates deck, shuffles deck asks for names
+		push eax
+		mov eax,lightRed
+		call SetTextColor
+		pop eax
+
 		MOV EDX, offset welcomeMsg
 		Call WriteString
+		call setDefaultTxtColor
 		CALL Crlf
 		CALL InitializeDeck
 		CALL ShuffleDeck		
@@ -27,8 +33,10 @@ RunGame PROC
 		MOV EAX, 1 
 		MOV ECX, PlayerCount
 		BettingLoop:
+			call setPlayerColor
 			CALL placebet
 			INC EAX
+			call setDefaultTxtColor
 		Loop BettingLoop
 
 	;initial deal for dealer
@@ -78,6 +86,7 @@ RunGame PROC
 		mov EAX, 1
 		mov ecx, Playercount
 		compare:
+			call setPlayerColor
 			mov currentplayer, al
 			call compareHand
 			call checkSplit
@@ -85,6 +94,7 @@ RunGame PROC
 				call compareSplitHand
 			.ENDIF
 			inc eax
+			call setDefaultTxtColor
 		loop compare
 		jmp endround
 

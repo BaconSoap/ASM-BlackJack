@@ -14,15 +14,29 @@
 
 .code
 
+setPlayerColor PROC USES eax
+	mov eax, ecx
+	call SetTextColor
+	RET
+setPlayerColor ENDP
+
+setDefaultTxtColor PROC USES eax
+	mov eax,15
+	call SetTextColor
+	RET
+setDefaultTxtColor ENDP
+
 ;displays all players in game
 outputPlayers PROC
 	mov ecx, playerCount
 	mov eax, 1
 	outloop:
+		call setPlayerColor
 		call display
 		call Testhand
 		call crlf
 		inc eax
+		call setDefaultTxtColor
 	loop outloop
 
 	RET
@@ -52,6 +66,7 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 	MOV edi, 0
 
 	NameLoop:
+		call setPlayerColor
 			mov edx, offset namePrompt
 			call WriteString
 			mov eax, ebx
@@ -80,6 +95,7 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 			jmp tryNameAgain
 		.ENDIF
 		inc ebx
+		call setDefaultTxtColor
 		pop ecx
 		add edi, TYPE Playerstructure
 	loop NameLoop
