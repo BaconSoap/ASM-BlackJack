@@ -11,7 +11,7 @@
 	NameTooLong BYTE "Name is too long, try again: ",0
 	NameTooShort BYTE "You must enter a name: ",0
 	TenDollarMinimum BYTE "There is $10 bet minimum. Try again: ",0
-	ProspectiveBet SDWORD 0 ; http://support.microsoft.com/kb/74666
+	ProspectiveBet DWORD 0 ; http://support.microsoft.com/kb/74666
 	NotEnoughInBank BYTE "Not enough money in the bank. Bet less: ",0
 	CantBet BYTE "Can't bet, not enough money in the bank.",0Ah,0
 
@@ -187,11 +187,11 @@ PlaceBet PROC USES ECX EDX ESI
 	mov eax,0
 	call readInt
 	mov ebx,eax
-	add eax,((PlayerStructure PTR PlayerArray[ESI]).bet)
+	add eax,((PlayerStructure PTR PlayerArray[ESI]).bet) ; Needed?
 	mov ProspectiveBet,eax
 	mov eax,0
 	mov eax,((PlayerStructure PTR PlayerArray[ESI]).BankAcc)
-	.IF ProspectiveBet > eax && SDWORD PTR ebx < 10
+	.IF (ProspectiveBet > SDWORD PTR eax) && (SDWORD PTR ebx < 10)
 		mov edx,OFFSET CantBet
 		call WriteString
 		;; FIXME go back to menu
@@ -200,7 +200,7 @@ PlaceBet PROC USES ECX EDX ESI
 		mov edx,OFFSET TenDollarMinimum
 		call WriteString
 		jmp TryBetAgain
-	.ELSEIF ProspectiveBet > eax ; if current bet + prospective bet is greater than bank, try again.
+	.ELSEIF ProspectiveBet > SDWORD PTR eax ; if current bet + prospective bet is greater than bank, try again.
 		mov edx,OFFSET NotEnoughInBank
 		call WriteString
 		jmp TryBetAgain
