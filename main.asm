@@ -27,6 +27,7 @@ Playerstructure STRUCT
 		splitHand DB HAND_SIZE DUP(52)
 		splitBool DB 0
 		splitBet DWORD 0
+		ACTIVE	DD	1
 Playerstructure ends
 
 COORD STRUCT
@@ -58,7 +59,10 @@ main PROC
 		Call WriteString
 		call setDefaultTxtColor
 		CALL NameInput
-	
+		PUSH ECX
+		MOV ECX, PlayerCount
+		MOV ActivePlayers, ECX
+		POP ECX
 		gameloop:
 			CALL RunGame
 			call getdealerhand

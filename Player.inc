@@ -231,11 +231,7 @@ doubleBet PROC USES EAX ESI EBX
 	add ebx,(Playerstructure PTR playerarray[esi]).bet
 	mov eax,(Playerstructure PTR playerarray[esi]).bankacc
 	.IF eax < ebx
-		mov edx,OFFSET CantDoubleDown
-		Call WriteString
-		mov eax,4000
-		call Delay ; FIXME: find alternative to delay. Should display CantDoubleDown WITH the new menu prompt.
-		inc ecx ; We want player to be asked for menu selection again.
+		MOV ShouldShowDoubleError, 1
 		pop eax
 	.ELSE
 		mov (Playerstructure PTR playerarray[esi]).bet, EBX
@@ -323,6 +319,12 @@ loseBet PROC USES ESI EAX EBX
 	.endw
 	;sets bet to 0
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
+	MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
+	CMP EAX, 10
+	JGE EndOfComp
+	DEC ActivePlayers
+	MOV (Playerstructure PTR playerarray[esi]).ACTIVE, 0
+	EndOfComp:
 	RET
 loseBet ENDP
 

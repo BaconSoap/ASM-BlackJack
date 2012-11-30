@@ -19,6 +19,8 @@ CURRENTPLAYER BYTE 0
 IsSplitTurn		DB	0
 DealerShowAll	DB	0
 NumberOfBust	DD	0
+ShouldShowDoubleError	DD	0
+ActivePlayers	DD 0
 
 ;stores first two card values to check for splitting
 FCardVal BYTE 0
@@ -38,9 +40,25 @@ RunGame PROC
 	;Ask each player for an initial bet, loops as many times as necessary
 		MOV EAX, 1 
 		MOV ECX, PlayerCount
+		
 		BettingLoop:
-			call setPlayerColor
-			CALL placebet
+			
+			PUSH EAX
+			mov esi, 0
+			
+			.while (eax > 1)
+				add esi, TYPE Playerstructure
+				dec eax
+			.endw
+
+			MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
+			.IF EAX >= 10
+				pop eax
+				call setPlayerColor
+				CALL placebet
+			.ELSE
+				pop eax
+			.ENDIF
 			INC EAX
 			call setDefaultTxtColor
 		Loop BettingLoop
@@ -77,10 +95,33 @@ RunGame PROC
 		mov ecx, Playercount
 		MOV NumberOfBust, 0
 		taketurn:
-			MOV DealerShowAll, 0
-			CALL DisplayAll
-			mov currentplayer, al
-			call Playerturn
+			
+			PUSH EAX
+			MOV ESI, PlayerCount
+			MOV ActivePlayers, ESI
+			mov esi, 0
+			
+			.while (eax > 1)
+				add esi, TYPE Playerstructure
+				dec eax
+			.endw
+
+			MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
+			MOV EBX, (Playerstructure PTR playerarray[esi]).bet
+			.IF EAX < 10 && EBX < 10
+				DEC ActivePlayers
+				POP EAX
+			.else
+				POP EAX
+				MOV DealerShowAll, 0
+				CALL DisplayAll
+				mov currentplayer, al
+				call Playerturn
+				
+			.ENDIF
+			.IF ActivePlayers <= 0
+			exit
+			.endif
 			inc eax
 		loop taketurn
 
@@ -167,6 +208,11 @@ turnloop:
 	
 	pop eax
 choosemenu:
+	.if ShouldShowDoubleError == 1
+		MOV EDX, OFFSET CantDoubleDown
+		CALL WriteString
+		MOV ShouldShowDoubleError, 0
+	.endif
 	MOV EDX, offset selectionMsg
 	CALL WriteString
 	CALL Crlf
@@ -204,14 +250,16 @@ choosemenu:
 	.elseif playerchoice == 3
 		pop eax
 		call doublebet
-		push eax
-		call dealcard
-		movzx ebx, al
-		pop eax
-		call addcardplayer
-		movzx eax, currentplayer
-		call testhand
-		jmp endturn
+		.if ShouldShowDoubleError == 0
+			push eax
+			call dealcard
+			movzx ebx, al
+			pop eax
+			call addcardplayer
+			movzx eax, currentplayer
+			call testhand
+			jmp endturn
+		.endif
 	.elseif playerchoice == 4
 	pop eax
 		pushad
