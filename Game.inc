@@ -17,6 +17,7 @@ DealerHandVal BYTE 0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
 IsSplitTurn		DB	0
+DealerShowAll	DB	0
 ;stores first two card values to check for splitting
 FCardVal BYTE 0
 SCardVal BYTE 0
@@ -73,6 +74,7 @@ RunGame PROC
 		mov EAX, 1
 		mov ecx, Playercount
 		taketurn:
+			MOV DealerShowAll, 0
 			CALL DisplayAll
 			mov currentplayer, al
 			call Playerturn
@@ -82,7 +84,8 @@ RunGame PROC
 	call DisplayAll
 	call dealerturn
 	;call showdealerhand
-			
+	MOV DealerShowAll, 1
+	CALL DisplayAll
 	;compare each player hand value to dealer hand value if dealer busted this is skipped
 	CMP DealerBust, 1
 	JE dealerlose

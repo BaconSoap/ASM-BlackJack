@@ -148,7 +148,8 @@ DisplayDealer PROC USES EDX ESI EAX
 	call writestring
 	CALL SetToBaseX
 	inc esi
-
+	cmp DealerShowAll, 1
+	je loopen
 
 
 	endstuff:
