@@ -1,6 +1,7 @@
 .data
 	CurrentPlayerColor	DB	2
 	OtherPlayerColor	DB	15
+	DealerColor			DB	14
 	CursorX				DB	0
 	CursorY				DB	0
 	BaseX				DB	0
@@ -19,6 +20,12 @@ SetOtherColor PROC USES EAX
 	CALL SetTextColor
 	RET
 SetOtherColor ENDP
+
+SetDealerColor PROC USES EAX
+	MOVZX EAX, DealerColor
+	CALL SetTextColor
+	RET
+SetDealerColor ENDP
 
 DisplayAll PROC USES EAX ECX ESI EDX
 	CALL SetOtherColor
@@ -96,8 +103,30 @@ DisplayAll PROC USES EAX ECX ESI EDX
 	RET
 DisplayAll ENDP
 
-DisplayDealer PROC
-	
+DisplayDealer PROC USES EDX ESI EAX 
+	CALL SetDealerColor
+
+	mov edx, offset dealer.pname
+	call writestring
+	CALL SetToBaseX
+	call getdealerhand
+	mov esi, offset handBuffer
+
+	loopen:
+	mov eax, 0
+	mov al, [esi]
+	cmp al, 52
+	JE endstuff
+	call getcarddisplay
+	mov edx, offset carddisplaystring
+	call writestring
+	CALL SetToBaseX
+	inc esi
+
+	jmp loopen
+
+	endstuff:
+	CALL SetOtherColor
 	RET
 DisplayDealer ENDP
 

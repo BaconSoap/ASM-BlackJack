@@ -14,16 +14,7 @@ CURRENTPLAYER BYTE 0
 
 RunGame PROC
 	;creates deck, shuffles deck asks for names
-		push eax
-		mov eax,lightRed
-		
-	
 
-		pop eax
-
-		MOV EDX, offset welcomeMsg
-		Call WriteString
-		call setDefaultTxtColor
 		CALL Crlf
 		CALL InitializeDeck
 		CALL ShuffleDeck		

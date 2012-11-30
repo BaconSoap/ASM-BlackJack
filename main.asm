@@ -41,10 +41,7 @@ Dealer Playerstructure<"Dealer",,,,>
 main PROC
 	CALL randomize
 	CALL ClearRegs
-		push eax
-		mov eax,lightRed
-		call SetTextColor
-		pop eax
+		
 		MOV EDX, offset welcomeMsg
 		Call WriteString
 		call setDefaultTxtColor
