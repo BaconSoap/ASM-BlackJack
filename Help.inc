@@ -71,20 +71,28 @@ hint PROC
 	.endw
 		
 	Mov cl, (Playerstructure PTR playerarray[esi]).cardCount
-	mov al, (Playerstructure PTR playerarray[esi]).phand
-	call getCardvalue
-	mov ah, al
+	;mov al, cl
+	;call writeint
 
 	mov eax, 0
+	mov edx, 0
+	mov al, (Playerstructure PTR playerarray[esi]).phand
+	call getCardvalue
+	mov dl, al
+	;call writeint
+
 	mov al, (Playerstructure PTR playerarray[esi]).phand[1]
 	call getcardvalue
+	;call writeint
 
 	;al is value of card 2
 	;ah is value of card 1
 	;cl is card count
 
-	.if (cl ==2) && (ah == al)
-		JE pair
+	;call dumpregs
+
+	.if (cl == 2) && (dl == al)
+		jmp pair
 	.endif
 
 	call gethandvalue
