@@ -637,3 +637,92 @@ checkSplit PROC USES EAX ESI
 		
 	RET
 checkSplit ENDP
+
+resetPhand PROC
+pushad
+	
+	mov eax, 1
+	mov ecx, playercount
+	mov edi, 52
+
+	resethand:
+	mov ebx, 0
+	push eax
+		.while (eax > 1)
+			add ebx, TYPE Playerstructure
+			dec eax
+		.endw
+		lea esi, (Playerstructure PTR playerarray[ebx]).Phand 
+		pop eax
+
+	mov ebx, 0
+	resetting:
+
+	MOV [ESI], edi
+
+	INC ebx
+	INC ESI
+	CMP EBX, HAND_SIZE
+	JNE resetting
+	inc eax
+	loop resethand
+
+popad
+ret
+resetPhand ENDP
+
+
+resetPsplit PROC
+pushad
+	
+	mov eax, 1
+	mov ecx, playercount
+	mov edi, 52
+
+	resetsplit:
+	mov ebx, 0
+	push eax
+		.while (eax > 1)
+			add ebx, TYPE Playerstructure
+			dec eax
+		.endw
+		lea esi, (Playerstructure PTR playerarray[ebx]).splitHand
+		mov  (Playerstructure PTR playerarray[ebx]).splitbet, 0
+		mov  (Playerstructure PTR playerarray[ebx]).splitbool, 0
+		pop eax
+
+	mov ebx, 0
+	splitreset:
+
+	MOV [ESI], edi
+
+	INC ebx
+	INC ESI
+	CMP EBX, HAND_SIZE
+	JNE splitreset
+	inc eax
+	loop resetsplit
+
+popad
+ret
+resetPsplit ENDP
+
+
+resetdealer PROC
+pushad
+	mov edx, 52
+	mov esi, offset dealer.phand
+
+	mov ebx, 0
+	resettingdealer:
+
+	MOV [ESI], edi
+
+	INC ebx
+	INC ESI
+	CMP EBX, HAND_SIZE
+	JNE resettingdealer
+
+popad
+ret
+resetdealer ENDP

@@ -17,6 +17,8 @@ RunGame PROC
 		push eax
 		mov eax,lightRed
 		
+	
+
 		pop eax
 
 		MOV EDX, offset welcomeMsg
@@ -25,7 +27,7 @@ RunGame PROC
 		CALL Crlf
 		CALL InitializeDeck
 		CALL ShuffleDeck		
-		CALL NameInput
+	
 		MOV DealerBust, 0
 	;-------------------------------------------
 	
