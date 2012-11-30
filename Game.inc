@@ -18,6 +18,8 @@ playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
 IsSplitTurn		DB	0
 DealerShowAll	DB	0
+NumberOfBust	DD	0
+
 ;stores first two card values to check for splitting
 FCardVal BYTE 0
 SCardVal BYTE 0
@@ -73,6 +75,7 @@ RunGame PROC
 	;LOOP THROUGH AND GIVE EACH PLAYER A chance to select an option
 		mov EAX, 1
 		mov ecx, Playercount
+		MOV NumberOfBust, 0
 		taketurn:
 			MOV DealerShowAll, 0
 			CALL DisplayAll
@@ -82,7 +85,12 @@ RunGame PROC
 		loop taketurn
 
 	call DisplayAll
+	MOV EDX, PlayerCount 
+	CMP NumberOfBust, EDX
+	JE NoDealerTurn
+	
 	call dealerturn
+	NoDealerTurn:
 	;call showdealerhand
 	MOV DealerShowAll, 1
 	CALL DisplayAll
@@ -248,6 +256,7 @@ choosemenu:
 	Busted:
 		MOV EDX, OFFSET Bustedmsg
 		call writestring
+		INC NumberOfBust
 		pop eax
 	endturn:
 
