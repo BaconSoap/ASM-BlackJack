@@ -145,7 +145,7 @@ RunGame ENDP
 
 
 
-PlayerTurn PROC
+PlayerTurn PROC USES EAX EDX ESI ECX
 pushad
 
 turnloop:
@@ -159,10 +159,11 @@ choosemenu:
 	MOV EDX, offset selectionMsg
 	CALL WriteString
 	CALL Crlf
+	push eax
 	call readint
 
 	MOV playerchoice, al
-
+	
 	.if playerchoice == 1
 		CALL DealCard
 		movzx ebx, al
