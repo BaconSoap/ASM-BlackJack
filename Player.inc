@@ -11,7 +11,7 @@
 	NameTooLong BYTE "Name is too long, try again: ",0
 	NameTooShort BYTE "You must enter a name: ",0
 	TenDollarMinimum BYTE "There is $10 bet minimum. Try again: ",0
-	ProspectiveBet DWORD 0 ; http://support.microsoft.com/kb/74666
+	ProspectiveBet SDWORD 0 ; http://support.microsoft.com/kb/74666
 	NotEnoughInBank BYTE "Not enough money in the bank. Bet less: ",0
 	CantBet BYTE "Can't bet, not enough money in the bank.",0Ah,0
 

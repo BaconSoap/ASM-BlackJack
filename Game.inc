@@ -6,7 +6,8 @@ SelectionMsg Byte "Please select one of the following",0dh,0ah
 			 BYTE "3. DOUBLE DOWN ",0dh,0ah
 			 BYTE "4. SPLIT ",0dh,0ah
 			 BYTE "5. RULES ", 0dh, 0ah
-			 BYTE "6. HINT ", 0dh, 0ah, 0
+			 BYTE "6. HINT ", 0dh, 0ah
+			 BYTE "7. EXIT ", 0dh, 0ah, 0
 Bustedmsg BYTE "Sorry, you busted",0dh,0ah,0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
@@ -144,7 +145,13 @@ turnloop:
 	push EAX
 	movzx eax, currentplayer
 	call DisplayAll
-
+	;checks if have 21 first turn
+	push eax
+	call gethandvaluenew
+		CMP eax, 21
+		JE endturn
+	pop eax
+choosemenu:
 	MOV EDX, offset selectionMsg
 	CALL WriteString
 	CALL Crlf
@@ -185,6 +192,11 @@ turnloop:
 	.elseif playerchoice == 6  ;hint
 		pop eax
 		call hint
+	.elseif playerchoice == 7  ;hint
+		pop eax
+		exit
+	.else
+		JMP choosemenu
 	.endif	
 
 		push eax

@@ -50,7 +50,7 @@ hint PROC
 	
 	push eax
 	call getplayerhand
-	call gethandvalue
+	call gethandvaluenew
 	mov handValueHint, al
 
 	mov eax, 0
@@ -95,7 +95,7 @@ hint PROC
 		jmp pair
 	.endif
 
-	call gethandvalue
+	call gethandvaluenew
 	mov bl, handType
 
 	;al is hand value
@@ -298,7 +298,7 @@ handTypePrompt PROC
 
 	call writeString
 	call getplayerhand
-	call gethandvalue
+	call gethandvaluenew
 	call writedec
 	mov edx, offset dealercardprompt
 	call writestring

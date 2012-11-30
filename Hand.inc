@@ -260,51 +260,6 @@ addCardDealer ENDP
 
 
 
-getHandValue PROC
-	mov handType, 'H'
-	mov eax, 0
-	mov esi, offset handbuffer
-	mov ebx, 0
-	mov al, [esi]
-
-	sumHand:
-	call getCardValue
-	add bl, al
-	.IF(al==11)
-		mov handType, 'S'
-	.ENDIF
-	inc esi
-	mov al, [esi]
-	cmp al, 52
-	JAE J1
-	jmp sumHand
-
-	J1:
-	mov esi, offset handbuffer
-	J2:
-	cmp bl, 21
-	JBE endit
-
-	checkAce:
-		mov al, [esi]
-		call getCardValue
-		cmp al, 11
-		JE changeto1
-		inc esi
-	loop checkace
-	jmp endit
-
-		changeto1:
-		sub bl, 10
-		mov handType, 'H'
-		jmp J2
-
-	endit:
-	mov al, bl
-
-	RET
-getHandValue ENDP
-
 ;Takes handbuffer and returns score for it
 ;Outputs player's score in EAX
 GetHandValueNew PROC USES ESI 
@@ -653,6 +608,7 @@ pushad
 			dec eax
 		.endw
 		lea esi, (Playerstructure PTR playerarray[ebx]).Phand 
+		mov (Playerstructure PTR playerarray[ebx]).bet, 0
 		pop eax
 
 	mov ebx, 0
