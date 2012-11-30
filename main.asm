@@ -70,7 +70,7 @@ main PROC
 			call resetphand
 			call resetPsplit
 			call resetdealer
-		loop gameloop
+		jmp gameloop
 	
 	CALL getdealerhand
 	MOV ecx, 0

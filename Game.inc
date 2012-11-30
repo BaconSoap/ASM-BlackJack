@@ -153,11 +153,7 @@ turnloop:
 	push EAX
 	movzx eax, currentplayer
 	call DisplayAll
-	;checks if have 21 first turn
-	push eax
-	call gethandvaluenew
-		CMP eax, 21
-		JE endturn
+	
 	pop eax
 choosemenu:
 	MOV EDX, offset selectionMsg
@@ -200,12 +196,13 @@ choosemenu:
 				call dumpregs
 				Call splithand
 			.else
+				popad
+				CALL DisplayAll
 				mov edx, offset nosplitmsg
 				call writestring 
-				popad
-				call dumpregs
+				
 				JMP choosemenu
-				.endif
+			.endif
 			
 
 	.elseif playerchoice == 5  ;rules
@@ -303,7 +300,7 @@ choosemenu:
 		call writestring
 		pop eax
 	endturnSplit:
-
+	
 	.ENDIF
 
 popad
