@@ -9,6 +9,11 @@ SelectionMsg Byte "Please select one of the following",0dh,0ah
 			 BYTE "6. HINT ", 0dh, 0ah
 			 BYTE "7. EXIT ", 0dh, 0ah, 0
 Bustedmsg BYTE "Sorry, you busted",0dh,0ah,0
+DBustMsg BYTE "Dealer has busted!",0dh,0ah,0
+nosplitmsg BYTE "You cannot split with this hand!",0dh,0ah,0
+;if dealer busted set to 1
+DealerBust BYTE  0
+DealerHandVal BYTE 0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
 IsSplitTurn		DB	0
@@ -273,8 +278,11 @@ choosemenu:
 		call testSplithand
 		jmp endturnSplit
 	.elseif playerchoice == 4
-		pop eax
-		;call splitHand
+		push edx
+		mov edx, offset nosplitmsg
+		call writestring
+		pop edx
+		jmp turnloopsplit
 	.elseif playerchoice == 5  ;rules
 		pop eax
 		call rules
@@ -301,3 +309,30 @@ choosemenu:
 popad
 ret
 PlayerTurn ENDP
+
+;dealers moves
+Dealerturn PROC
+pushad
+
+	call getdealerhand
+	call gethandvaluenew
+		mov DealerHandVal, al
+;	call writeint
+	
+	.while (DealerHandVal < 17)
+		Call dealcard
+		movzx ebx, al
+		call addcarddealer
+		call getdealerhand
+		call gethandvaluenew
+		mov DealerHandVal, al
+		call writeint
+	.endw
+	.if (AL > 21)
+		MOV EDX, offset DBustMsg
+		call writestring
+		MOV DealerBust, 1
+	.endif
+popad
+ret
+dealerturn ENDP

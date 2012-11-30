@@ -34,17 +34,3 @@ pushad
 popad
 ret
 dealerturn ENDP
-
-cansplit proc
-pushad
-	mov ebx, 0
-	mov bl, FCardVal
-	.if (bl == SCardval)
-		Call splithand
-	.else
-		mov edx, offset nosplitmsg
-		call writestring
-	.endif
-popad
-ret
-cansplit endp

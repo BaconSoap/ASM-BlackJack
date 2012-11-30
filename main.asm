@@ -14,7 +14,6 @@ INCLUDE Hand.inc
 INCLUDE Deck.inc
 INCLUDE Game.inc
 INCLUDE Display.inc
-INCLUDE joeproc.inc
 INCLUDE help.inc
 
 
