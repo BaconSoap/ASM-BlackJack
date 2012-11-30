@@ -167,7 +167,7 @@ GetCardDisplay PROC USES EBX ESI ECX
 
 	;Format display of the card suit
 	SetSuit:
-	MOV AL, 9
+	MOV AL, " "
 	MOV [ESI], AL
 	INC ESI
 

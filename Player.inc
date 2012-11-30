@@ -62,7 +62,7 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 		mov ecx, SIZEOF (Playerstructure PTR playerarray[edi]).pname
 		tryNameAgain:
 		call ReadString
-		.IF eax > 30
+		.IF eax > 21
 			push edx
 			push ecx
 			mov edx,OFFSET NameTooShort

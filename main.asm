@@ -12,12 +12,13 @@ INCLUDE Player.inc
 INCLUDE Hand.inc
 INCLUDE Deck.inc
 INCLUDE Game.inc
+INCLUDE Display.inc
 INCLUDE joeproc.inc
 INCLUDE help.inc
 
 .data
 Playerstructure STRUCT
-		Pname BYTE 30 dup(?)
+		Pname BYTE 21 dup(?)
 		Bet DWORD 0
 		Bankacc DWORD 300
 		phand DB HAND_SIZE DUP(52)

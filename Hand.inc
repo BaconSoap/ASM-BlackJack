@@ -394,7 +394,7 @@ showdealerHand ENDP
 
 
 
-testHand PROC 
+testHand PROC USES ESI EAX EDX
 	pushad
 	call crlf
 	call getplayerhand

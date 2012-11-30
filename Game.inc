@@ -54,22 +54,23 @@ RunGame PROC
 		Loop DEALLOOP
 		;--------------------------------
 
-	call outputplayers
-	call showdealerhand
+	call DisplayAll
+	;call showdealerhand
 	;
 
 	;LOOP THROUGH AND GIVE EACH PLAYER A chance to select an option
 		mov EAX, 1
 		mov ecx, Playercount
 		taketurn:
+			CALL DisplayAll
 			mov currentplayer, al
 			call Playerturn
 			inc eax
 		loop taketurn
 
-	call outputplayers
+	call DisplayAll
 	call dealerturn
-	call showdealerhand
+	;call showdealerhand
 			
 	;compare each player hand value to dealer hand value if dealer busted this is skipped
 	CMP DealerBust, 1
@@ -123,7 +124,7 @@ RunGame PROC
 		loop checkPlayer
 
 	endround:
-	call outputplayers
+	call DisplayAll
 
 ret
 RunGame ENDP

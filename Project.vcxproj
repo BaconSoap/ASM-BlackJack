@@ -64,7 +64,7 @@
   <ItemGroup>
     <None Include="Deck.inc" />
     <None Include="Game.inc" />
-    <None Include="Graphics.inc" />
+    <None Include="Display.inc" />
     <None Include="Hand.inc" />
     <None Include="help.inc" />
     <None Include="joeproc.inc" />
