@@ -162,6 +162,14 @@ choosemenu:
 	PUSH EAX
 	CALL GetPlayerHand
 	CALL GetHandValueNew
+	CMP EAX, 21
+	JE ItBlackJack 
+	JMP NotABlackJack
+	ItBlackJack:
+	POP EAX
+	JMP EndTurn
+
+	NotABlackJack:
 	POP EAX
 
 	push eax
