@@ -16,7 +16,7 @@ RunGame PROC
 	;creates deck, shuffles deck asks for names
 		push eax
 		mov eax,lightRed
-		call SetTextColor
+		
 		pop eax
 
 		MOV EDX, offset welcomeMsg
@@ -148,7 +148,7 @@ pushad
 turnloop:
 	push EAX
 	movzx eax, currentplayer
-	call testhand
+	call DisplayAll
 
 	MOV EDX, offset selectionMsg
 	CALL WriteString

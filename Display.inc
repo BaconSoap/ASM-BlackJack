@@ -6,7 +6,7 @@
 	BaseX				DB	0
 	BetDisplay			DB	"Bet: ", 0
 	BankDisplay			DB	"Balance: ", 0
-
+	CurrentValue		DB	"Hand Value: ", 0
 .code
 SetCurrentColor PROC USES EAX
 	MOVZX EAX, CurrentPlayerColor
@@ -24,7 +24,7 @@ DisplayAll PROC USES EAX ECX ESI EDX
 	CALL SetOtherColor
 	CALL ClrScr
 	;CURRENTPLAYER
-	MOV ECX, 0
+	MOV ECX, 1
 	MOV ESI, 0
 	
 	MOV CursorX, 0
@@ -59,8 +59,19 @@ DisplayAll PROC USES EAX ECX ESI EDX
 			MOV EDX, OFFSET BetDisplay
 			CALL WriteString
 			MOV EAX, (PlayerStructure PTR PlayerArray[ESI]).Bet
-			CALL WriteDec
 			
+			CALL WriteDec
+			CALL SetToBaseX
+		;Show Total
+			MOV EDX, OFFSET CurrentValue
+			CALL WriteString
+			PUSH EAX
+			MOV EAX, ECX
+			CALL GetPlayerHand
+			
+			CALL GetHandValueNew
+			CALL WriteDec
+			POP EAX
 		;ShowCards
 			CALL SetToBaseX
 			CALL ShowPlayerCards
@@ -74,17 +85,24 @@ DisplayAll PROC USES EAX ECX ESI EDX
 		ADD ESI, TYPE PlayerStructure
 		INC ECX
 		CMP ECX, PlayerCount
-	JL PlayerLoop
+	JLE PlayerLoop
+
+	CALL DisplayDealer
+
 	MOV CursorX, 0
-	MOV CursorY, 15
+	MOV CursorY, 12
 	CALL MoveCursor
 	CALL SetOtherColor
 	RET
 DisplayAll ENDP
 
+DisplayDealer PROC
+	
+	RET
+DisplayDealer ENDP
+
 ShowPlayerCards PROC USES EAX ECX ESI EDX
 	MOV EAX, ECX
-	INC EAX
 	
 	call getplayerhand
 	mov esi, offset handBuffer

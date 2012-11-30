@@ -15,14 +15,12 @@
 .code
 
 setPlayerColor PROC USES eax
-	mov eax, ecx
-	call SetTextColor
+
 	RET
 setPlayerColor ENDP
 
 setDefaultTxtColor PROC USES eax
-	mov eax,15
-	call SetTextColor
+
 	RET
 setDefaultTxtColor ENDP
 
