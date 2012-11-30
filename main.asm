@@ -7,6 +7,7 @@ TITLE Blackjack						(main.asm)
 HAND_SIZE = 11
 CARD_COUNT = 52
 
+
 INCLUDE IRVINE32.inc
 INCLUDE Player.inc
 INCLUDE Hand.inc
@@ -15,6 +16,7 @@ INCLUDE Game.inc
 INCLUDE Display.inc
 INCLUDE joeproc.inc
 INCLUDE help.inc
+
 
 .data
 Playerstructure STRUCT
@@ -28,20 +30,30 @@ Playerstructure STRUCT
 		splitBet DWORD 0
 Playerstructure ends
 
+COORD STRUCT
+	x word ?
+	y word ?
+COORD ENDS
 
 HandBuffer DB HAND_SIZE DUP(52) ;HandBuffer will hold a hand that is grabbed through a procedure.
 CardBuffer DB 52 ;CardBuffer will hold a single card
-
+BufferSize COORD <160, 100>
 
 PlayerArray PlayerStructure 5 DUP(<>)
 Dealer Playerstructure<"Dealer",,,,>
+hConsoleOut    DWORD ?
 
 
 .code 
 main PROC
+
+	invoke GetStdHandle, -11
+	mov hConsoleOut, eax
+	invoke SetConsoleScreenBufferSize, hConsoleOut, BufferSize
+
 	CALL randomize
 	CALL ClearRegs
-		
+
 		MOV EDX, offset welcomeMsg
 		Call WriteString
 		call setDefaultTxtColor
