@@ -14,6 +14,7 @@
 	ProspectiveBet DWORD 0 ; http://support.microsoft.com/kb/74666
 	NotEnoughInBank BYTE "Not enough money in the bank. Bet less: ",0
 	CantBet BYTE "Can't bet, not enough money in the bank.",0Ah,0
+	CantDoubleDown BYTE "Can't double down, not enought money in the bank. ",0Ah,0
 
 .code
 
@@ -225,12 +226,23 @@ doubleBet PROC USES EAX ESI EBX
 		add esi, TYPE Playerstructure
 		dec eax
 	.endw
-	;double down doubles your bet 
-	MOV EBX, (Playerstructure PTR playerarray[esi]).bet
-	ADD (Playerstructure PTR playerarray[esi]).bet, EBX
-	;withdraw amount from players bank | pops player number from eax so it withdraws from correct player
-	pop eax
-	CALL withdraw
+	;double down doubles your bet, but checks that you have enough money first.
+	MOV EBX,(Playerstructure PTR playerarray[esi]).bet
+	add ebx,(Playerstructure PTR playerarray[esi]).bet
+	mov eax,(Playerstructure PTR playerarray[esi]).bankacc
+	.IF eax < ebx
+		mov edx,OFFSET CantDoubleDown
+		Call WriteString
+		mov eax,4000
+		call Delay ; FIXME: find alternative to delay. Should display CantDoubleDown WITH the new menu prompt.
+		inc ecx ; We want player to be asked for menu selection again.
+		pop eax
+	.ELSE
+		mov (Playerstructure PTR playerarray[esi]).bet, EBX
+		;withdraw amount from players bank | pops player number from eax so it withdraws from correct player
+		pop eax
+		CALL withdraw
+	.ENDIF
 
 	RET
 doubleBet ENDP
