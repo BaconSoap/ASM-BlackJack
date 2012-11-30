@@ -41,8 +41,21 @@ Dealer Playerstructure<"Dealer",,,,>
 main PROC
 	CALL randomize
 	CALL ClearRegs
-	CALL RunGame
-
+		push eax
+		mov eax,lightRed
+		call SetTextColor
+		pop eax
+		MOV EDX, offset welcomeMsg
+		Call WriteString
+		call setDefaultTxtColor
+		CALL NameInput
+	
+		gameloop:
+			CALL RunGame
+			call resetphand
+			call resetPsplit
+		loop gameloop
+	
 	CALL getdealerhand
 	MOV ecx, 0
 	MOV cl, dealer.CardCount
