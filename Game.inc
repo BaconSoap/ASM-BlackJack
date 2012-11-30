@@ -189,6 +189,7 @@ choosemenu:
 		call testhand
 		jmp endturn
 	.elseif playerchoice == 4
+	pop eax
 		pushad
 		mov ebx, 0
 			mov bl, FCardVal
