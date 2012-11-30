@@ -1,5 +1,6 @@
 .data
 DBustMsg BYTE "Dealer has busted!",0dh,0ah,0
+nosplitmsg BYTE "You cannot split with this hand!",0dh,0ah,0
 ;if dealer busted set to 1
 DealerBust BYTE  0
 DealerHandVal BYTE 0
@@ -35,7 +36,15 @@ ret
 dealerturn ENDP
 
 cansplit proc
-
-
+pushad
+	mov ebx, 0
+	mov bl, FCardVal
+	.if (bl == SCardval)
+		Call splithand
+	.else
+		mov edx, offset nosplitmsg
+		call writestring
+	.endif
+popad
 ret
 cansplit endp

@@ -12,6 +12,9 @@ Bustedmsg BYTE "Sorry, you busted",0dh,0ah,0
 playerChoice BYTE 0
 CURRENTPLAYER BYTE 0
 IsSplitTurn		DB	0
+;stores first two card values to check for splitting
+FCardVal BYTE 0
+SCardVal BYTE 0
 .code
 
 RunGame PROC
@@ -184,19 +187,35 @@ choosemenu:
 		call testhand
 		jmp endturn
 	.elseif playerchoice == 4
-		pop eax
-		call splitHand
+		pushad
+		mov ebx, 0
+			mov bl, FCardVal
+			.if (bl == SCardval)
+				popad
+				call dumpregs
+				Call splithand
+			.else
+				mov edx, offset nosplitmsg
+				call writestring 
+				popad
+				call dumpregs
+				JMP choosemenu
+				.endif
+			
+
 	.elseif playerchoice == 5  ;rules
 		pop eax
 		call rules
 	.elseif playerchoice == 6  ;hint
 		pop eax
 		call hint
-	.elseif playerchoice == 7  ;hint
+	.elseif playerchoice == 7  ;exit
 		pop eax
 		exit
 	.else
+		call dumpregs
 		JMP choosemenu
+
 	.endif	
 
 		push eax

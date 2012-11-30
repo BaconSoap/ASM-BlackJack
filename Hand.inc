@@ -262,22 +262,28 @@ addCardDealer ENDP
 
 ;Takes handbuffer and returns score for it
 ;Outputs player's score in EAX
-GetHandValueNew PROC USES ESI 
+GetHandValueNew PROC USES ESI EDX
 	
 	;CALL getPlayerHand
 	MOV ESI, OFFSET HandBuffer
 	MOV total, 0
 	MOV aceCount, 0
-
+	MOV EDX, 0
 	
 	StartFirstLoop:
-	;call dumpregs
+		inc edx
 		MOV EAX, 0
 		MOV AL, [ESI]
 		CMP EAX, 52
 
 		JE StartAceLoop
 		CALL getCardNumber
+		;moves values to fcardval and scardval in order to see if you can split
+			.if (EDX == 1)
+				mov FCardVal, AL
+			.elseif (EDX == 2)
+				mov FCardVal, AL
+			.endif
 
 		CMP EAX, 0
 		JE IHateAces
