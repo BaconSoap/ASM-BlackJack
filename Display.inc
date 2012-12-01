@@ -17,6 +17,7 @@
 	C_PLAYERWIN			=	2
 	C_PLAYERLOSE		=	3
 	;Messages
+	EmptyString			DB	0
 	PlayerMBust			DB	"You busted", 0
 	PlayerMWin			DB	"You won", 0
 	PlayerMLose			DB	"You lost", 0
@@ -107,13 +108,20 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 			CALL GetHandValueNew
 			CALL WriteDec
 			POP EAX
+			CALL SetToBaseX
 		;Show Message
 			CALL GetPlayerMessage
 			.IF		(CurrentPlayerMessage == C_PLAYERNOMESSAGE)
+				MOV EDX, OFFSET EmptyString
 			.ELSEIF (CurrentPlayerMessage == C_PLAYERBUST)
+				MOV EDX, OFFSET PlayerMBust
 			.ELSEIF (CurrentPlayerMessage == C_PLAYERWIN)
+				MOV EDX, OFFSET PlayerMWin
 			.ELSEIF (CurrentPlayerMessage == C_PLAYERLOSE)
+				MOV EDX, OFFSET PlayerMLose
 			.ENDIF
+			CALL WriteString
+			CALL SetToBaseX
 		;Show Cards
 			CALL SetToBaseX
 			PUSH EAX
@@ -157,7 +165,7 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 	CALL DisplayDealer
 
 	MOV CursorX, 0
-	MOV CursorY, 12
+	MOV CursorY, 20
 	CALL MoveCursor
 	CALL SetOtherColor
 	RET

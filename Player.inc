@@ -112,13 +112,7 @@ nameInput ENDP
 ;displays player name, bank, and bet | pass eax player number 1-5
 display PROC USES EBX ECX EDX ESI EAX EDI
 		
-		mov esi, 0
-			;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-		.while (eax > 1)
-			add esi, TYPE Playerstructure
-			dec eax
-		.endw
-		
+		CALL GetPlayerOffset
 		lea EDX, (Playerstructure PTR playerarray[esi]).pname
 		Mov EAX, (Playerstructure PTR playerarray[esi]).bankacc
 		Mov EBX, (Playerstructure PTR playerarray[esi]).bet
@@ -140,13 +134,7 @@ display ENDP
 ;update bank pass eax player number (1-5) and ebx amount to change update bank
 deposit PROC USES ESI EAX EBX
 
-	mov esi, 0
-		
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;add ebx to players bank account
 	ADD (Playerstructure PTR playerarray[esi]).bankacc, EBX
 	
@@ -157,12 +145,7 @@ deposit ENDP
 ;update bank pass eax player number and ebx amount to change update bank
 withdraw PROC USES ESI EAX EBX
 
-	mov esi, 0
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;sub ebx to players bank account
 	SUB (Playerstructure PTR playerarray[esi]).bankacc, EBX
 	
@@ -173,14 +156,7 @@ withdraw ENDP
 ;pass player number in EAX(1-5) withdraws money from account and places in bet
 PlaceBet PROC USES ECX EDX ESI
 	
-	push eax
-	mov esi, 0
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
-	pop eax
+	CALL GetPlayerOffset
 
 	;betting prompt for players
 	mov edx, offset betprompt
@@ -226,13 +202,8 @@ PlaceBet ENDP
 ;--------------------------------------------------------------------
 ;for double down send player number in EAX
 doubleBet PROC USES EAX ESI EBX
-	mov esi, 0
-	push eax
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
+	PUSH EAX
 	;double down doubles your bet, but checks that you have enough money first.
 	MOV EBX,(Playerstructure PTR playerarray[esi]).bet
 	add ebx,(Playerstructure PTR playerarray[esi]).bet
@@ -253,18 +224,11 @@ doubleBet ENDP
 ;--------------------------------------------------------------------
 ;for double down send player number in EAX
 doubleSplitBet PROC USES EAX ESI EBX
-	mov esi, 0
-	push eax
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;double down doubles your bet 
 	MOV EBX, (Playerstructure PTR playerarray[esi]).Splitbet
 	ADD (Playerstructure PTR playerarray[esi]).bet, EBX
 	;withdraw amount from players bank | pops player number from eax so it withdraws from correct player
-	pop eax
 	CALL withdraw
 
 	RET
@@ -275,17 +239,10 @@ doubleSplitBet ENDP
 winBet PROC USES ESI EAX EBX
 	
 	
-	mov esi, 0
-	push eax
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;sub ebx to players bank account
 	MOV EBX, (Playerstructure PTR playerarray[esi]).bet
 	;calls deposit twice so it replaces the initial bet and then the amount won
-		pop eax
 		CALL deposit
 		CALL deposit
 	;sets bet to 0
@@ -298,17 +255,11 @@ winBet ENDP
 winSplitBet PROC USES ESI EAX EBX
 	
 	
-	mov esi, 0
-	push eax
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;sub ebx to players bank account
 	MOV EBX, (Playerstructure PTR playerarray[esi]).Splitbet
 	;calls deposit twice so it replaces the initial bet and then the amount won
-		pop eax
+		
 		CALL deposit
 		CALL deposit
 	;sets bet to 0
@@ -320,21 +271,9 @@ winSplitBet ENDP
 ;send the losing player number in EAX
 loseBet PROC USES ESI EAX EBX
 	
-	mov esi, 0
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;sets bet to 0
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
-	;MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
-	;CMP EAX, 10
-	;JGE EndOfComp
-	;DEC ActivePlayers
-	;MOV (Playerstructure PTR playerarray[esi]).ACTIVE, 0
-	;EndOfComp:
-
 
 	RET
 loseBet ENDP
@@ -343,20 +282,9 @@ loseBet ENDP
 ;send the losing player number in EAX
 loseSplitBet PROC USES ESI EAX EBX
 	
-	mov esi, 0
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
 	;sets bet to 0
 	MOV (Playerstructure PTR playerarray[esi]).splitbet, 0
-	;MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
-	;CMP EAX, 10
-	;JGE EndOfComp
-	;DEC ActivePlayers
-	;MOV (Playerstructure PTR playerarray[esi]).ACTIVE, 0
-	;EndOfComp:
 
 	RET
 loseSplitBet ENDP
@@ -364,17 +292,11 @@ loseSplitBet ENDP
 ;--------------------------------------------------------------------
 ;pass player number in EAX returns the bet to that player
 pushBet PROC USES ESI EAX EBX
-	mov esi, 0
-	push eax
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
+
 	;sub ebx to players bank account
 	MOV EBX, (Playerstructure PTR playerarray[esi]).bet
 	;calls deposit twice so it replaces the initial bet and then the amount won
-		pop eax
 		CALL deposit
 	;sets bet to 0
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
@@ -384,26 +306,35 @@ pushBet ENDP
 ;--------------------------------------------------------------------
 ;pass player number in EAX returns the bet to that player
 pushSplitBet PROC USES ESI EAX EBX
-	mov esi, 0
-	push eax
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
+	CALL GetPlayerOffset
+
 	;sub ebx to players bank account
 	MOV EBX, (Playerstructure PTR playerarray[esi]).Splitbet
 	;calls deposit twice so it replaces the initial bet and then the amount won
-		pop eax
+		
 		CALL deposit
 	;sets bet to 0
 	MOV (Playerstructure PTR playerarray[esi]).Splitbet, 0
 	RET
 pushSplitBet ENDP
 
+;Takes in EAX the player number
+;Returns in ESI the player offset
+GetPlayerOffset PROC USES EAX
+	mov esi, 0
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	RET
+GetPlayerOffset ENDP
+
 ;Takes in player number in EAX
 ;Sets CurrentPlayerMessage to the player's message
-GetPlayerMessage PROC USES EAX
-	
+GetPlayerMessage PROC USES EAX ESI
+	CALL GetPlayerOffset
+	MOV AL, (Playerstructure PTR playerarray[esi]).Message
+	MOV CurrentPlayerMessage, AL
 	RET
 GetPlayerMessage ENDP
