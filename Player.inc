@@ -28,6 +28,7 @@ setDefaultTxtColor PROC USES eax
 	RET
 setDefaultTxtColor ENDP
 
+;--------------------------------------------------------------------
 ;displays all players in game
 outputPlayers PROC
 	mov ecx, playerCount
@@ -44,6 +45,7 @@ outputPlayers PROC
 	RET
 outputPlayers ENDP
 
+;--------------------------------------------------------------------
 ;Start of game input number of players and names of each
 nameInput PROC USES EAX EBX ECX EDX ESI
 	getHeadCount:
@@ -106,6 +108,7 @@ nameInput PROC USES EAX EBX ECX EDX ESI
 	RET
 nameInput ENDP
 
+;--------------------------------------------------------------------
 ;displays player name, bank, and bet | pass eax player number 1-5
 display PROC USES EBX ECX EDX ESI EAX EDI
 		
@@ -133,6 +136,7 @@ display PROC USES EBX ECX EDX ESI EAX EDI
 	RET
 display ENDP
 
+;--------------------------------------------------------------------
 ;update bank pass eax player number (1-5) and ebx amount to change update bank
 deposit PROC USES ESI EAX EBX
 
@@ -149,6 +153,7 @@ deposit PROC USES ESI EAX EBX
 	RET
 deposit ENDP
 
+;--------------------------------------------------------------------
 ;update bank pass eax player number and ebx amount to change update bank
 withdraw PROC USES ESI EAX EBX
 
@@ -164,6 +169,7 @@ withdraw PROC USES ESI EAX EBX
 	RET
 withdraw ENDP
 
+;--------------------------------------------------------------------
 ;pass player number in EAX(1-5) withdraws money from account and places in bet
 PlaceBet PROC USES ECX EDX ESI
 	
@@ -217,6 +223,7 @@ PlaceBet PROC USES ECX EDX ESI
 	RET
 PlaceBet ENDP
 
+;--------------------------------------------------------------------
 ;for double down send player number in EAX
 doubleBet PROC USES EAX ESI EBX
 	mov esi, 0
@@ -243,6 +250,7 @@ doubleBet PROC USES EAX ESI EBX
 	RET
 doubleBet ENDP
 
+;--------------------------------------------------------------------
 ;for double down send player number in EAX
 doubleSplitBet PROC USES EAX ESI EBX
 	mov esi, 0
@@ -262,7 +270,7 @@ doubleSplitBet PROC USES EAX ESI EBX
 	RET
 doubleSplitBet ENDP
 
-
+;--------------------------------------------------------------------
 ;send the winning player number in EAX
 winBet PROC USES ESI EAX EBX
 	
@@ -285,6 +293,7 @@ winBet PROC USES ESI EAX EBX
 	RET
 winBet ENDP
 
+;--------------------------------------------------------------------
 ;send the winning player number in EAX
 winSplitBet PROC USES ESI EAX EBX
 	
@@ -307,6 +316,7 @@ winSplitBet PROC USES ESI EAX EBX
 	RET
 winSplitBet ENDP
 
+;--------------------------------------------------------------------
 ;send the losing player number in EAX
 loseBet PROC USES ESI EAX EBX
 	
@@ -328,6 +338,8 @@ loseBet PROC USES ESI EAX EBX
 	RET
 loseBet ENDP
 
+;--------------------------------------------------------------------
+;pass player number in EAX returns the bet to that player
 pushBet PROC USES ESI EAX EBX
 	mov esi, 0
 	push eax
@@ -346,6 +358,8 @@ pushBet PROC USES ESI EAX EBX
 	RET
 pushBet ENDP
 
+;--------------------------------------------------------------------
+;pass player number in EAX returns the bet to that player
 pushSplitBet PROC USES ESI EAX EBX
 	mov esi, 0
 	push eax
