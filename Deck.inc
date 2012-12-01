@@ -6,6 +6,7 @@ Discard DB CARD_COUNT DUP(?)
 CardDisplayString DB "10 S", 0, 0
 topCard DB 0
 
+;--------------------------------------------------------------------
 ;Test various deck procedures
 .CODE
 TestDeck PROC
@@ -29,6 +30,8 @@ TestDeck PROC
 	RET
 TestDeck ENDP
 
+;--------------------------------------------------------------------
+;Test deal functionality 
 testDeal PROC
 	mov ecx, 10
 	deal10:
@@ -42,7 +45,8 @@ testDeal PROC
 	RET
 testDeal ENDP
 
-
+;--------------------------------------------------------------------
+;Output: Deck array with values 0-51
 InitializeDeck PROC USES ECX ESI
 	MOV topCard, 0
 	MOV ECX, 0
@@ -57,6 +61,7 @@ InitializeDeck PROC USES ECX ESI
 	RET
 InitializeDeck ENDP
 
+;--------------------------------------------------------------------
 ;Gets the suit of a card
 ;0-12:		Spades		(0)
 ;13-25:		Diamonds	(1)
@@ -87,6 +92,7 @@ GetSuit PROC
 	RET
 GetSuit ENDP
 
+;--------------------------------------------------------------------
 ;Takes a CardID (0-51) and returns the 0-based card number
 ;Input:		CardID in EAX
 ;Output:	Card Number in EAX
@@ -108,6 +114,7 @@ GetCardNumber PROC
 	RET
 GetCardNumber ENDP
 
+;--------------------------------------------------------------------
 ;Takes a CardID and returns the display form of the card: 1 -> "2 S", 10 -> "J S"
 ;Input:		CardID in EAX
 ;Output:	Display string in CardDisplayString
@@ -204,9 +211,9 @@ GetCardDisplay PROC USES EBX ESI ECX
 	RET
 GetCardDisplay ENDP
 
-;-----------------------------------
-; pass offset of deck using ESI
-; returns shuffled deck in ESI
+;--------------------------------------------------------------------
+; Input: offset of deck in ESI
+; Output: offset of shuffled deck in ESI
 
 ShuffleDeck PROC USES EAX EBX ECX ESI edi
 	MOV topCard, 0
@@ -236,8 +243,9 @@ ShuffleDeck PROC USES EAX EBX ECX ESI edi
 	ret
 ShuffleDeck ENDP
 
-;returns card in position topCard in EAX 
-;inc topCard to move through the deck
+;--------------------------------------------------------------------
+;Output: card in position topCard in EAX 
+;Output: inc topCard to move through the deck
 dealCard PROC USES EBX ESI
 	mov esi, offset Deck
 	mov ebx, 0
@@ -249,6 +257,10 @@ dealCard PROC USES EBX ESI
 	RET
 dealCard ENDP
 
+
+;--------------------------------------------------------------------
+;Intput: Card in EAX
+;Output: Value of card in EAX
 getCardValue PROC
 	call getCardNumber
 	.IF eax == 0

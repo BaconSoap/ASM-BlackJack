@@ -9,8 +9,8 @@ handType BYTE 'H'
 
 .code
 
-
-;Gets the dealer hand and puts it into HandBuffer
+;--------------------------------------------------------------------
+;Output: dealer hand into HandBuffer
 GetDealerHand PROC USES EAX ESI EDI ECX
 	
 ;	MOVZX ECX, Dealer.CardCount
@@ -31,7 +31,8 @@ StartCopy:
 RET
 GetDealerHand ENDP
 
-;Places HandBuffer into the dealer hand
+;--------------------------------------------------------------------
+;Output: HandBuffer copied into the dealer hand
 SetDealerHand PROC USES EAX ESI EDI ECX EBX
 	MOV ECX, 0
 	MOV EBX, 0 
@@ -51,8 +52,9 @@ SetDealerHand PROC USES EAX ESI EDI ECX EBX
 	RET
 SetDealerHand ENDP
 
-
-;pass player number in EAX places that players hand into handbuffer
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: player hand copied into handbuffer
 getPlayerHand PROC USES ECX ESI EDI EAX EBX
 	mov ecx, 0
 	mov edi, offset handBuffer
@@ -86,7 +88,9 @@ getPlayerHand PROC USES ECX ESI EDI EAX EBX
 	RET
 getPlayerHand ENDP
 
-;pass player number in EAX places that players hand into handbuffer
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: players split hand copied into handbuffer
 getPlayerSplitHand PROC USES ECX ESI EDI EAX EBX
 	mov ecx, 0
 	mov edi, offset handBuffer
@@ -120,7 +124,9 @@ getPlayerSplitHand PROC USES ECX ESI EDI EAX EBX
 	RET
 getPlayerSplitHand ENDP
 
-;pass player number in EAX places handbuffer into that players hand
+;--------------------------------------------------------------------
+;Input: pass player number in EAX
+;Output: handbuffer copied into players hand
 setPlayerHand PROC USES ECX EDI ESI EAX EBX
 	mov ecx, 0
 	mov edi, offset handBuffer
@@ -154,7 +160,9 @@ setPlayerHand PROC USES ECX EDI ESI EAX EBX
 	RET
 setPlayerHand ENDP
 
-;pass player number in EAX places handbuffer into that players hand
+;--------------------------------------------------------------------
+;Input: pass player number in EAX
+;Output: handbuffer copied into players split hand
 setPlayerSplitHand PROC USES ECX EDI ESI EAX EBX
 	mov ecx, 0
 	mov edi, offset handBuffer
@@ -188,7 +196,9 @@ setPlayerSplitHand PROC USES ECX EDI ESI EAX EBX
 	RET
 setPlayerSplitHand ENDP
 
-;pass player number in EAX and card to add in EBX
+;--------------------------------------------------------------------
+;Input: player number in EAX and card to add in EBX
+;Output: adds card to players hand
 addCardPlayer PROC USES ECX ESI EAX
 	call getPlayerHand
 	mov esi, offset handbuffer
@@ -218,7 +228,9 @@ endadd:
 	RET
 addCardPlayer ENDP
 
-;pass player number in EAX and card to add in EBX
+;--------------------------------------------------------------------
+;Input: player number in EAX and card to add in EBX
+;Output: adds card to a players split hand
 addCardPlayerSplit PROC USES ECX ESI EAX
 	call getPlayerSplitHand
 	mov esi, offset handbuffer
@@ -238,7 +250,9 @@ endadd:
 	RET
 addCardPlayerSplit ENDP
 
-; card to add in EBX
+;--------------------------------------------------------------------
+;Input: card to add in EBX
+;Output: adds a card to the deals hand
 addCardDealer PROC USES ECX ESI EAX
 	call getDealerHand
 	mov esi, offset handbuffer
@@ -259,10 +273,13 @@ endadd:
 addCardDealer ENDP
 
 
-
+;--------------------------------------------------------------------
 ;Takes handbuffer and returns score for it
-;Outputs player's score in EAX
+;Output: player's hand value in EAX
 GetHandValueNew PROC USES ESI EDX
+
+	mov al, 'H'
+	mov handType, al
 	
 	;CALL getPlayerHand
 	MOV ESI, OFFSET HandBuffer
@@ -312,8 +329,7 @@ GetHandValueNew PROC USES ESI EDX
 		;IF Total > 21 Subtract 10 from total
 		CMP total, 21
 		JG SubtractTen
-		DEC aceCount
-		JMP StartAceLoop
+		JMP EndOfProc
 		SubtractTen:
 		SUB total, 10
 		DEC aceCount
@@ -322,9 +338,15 @@ GetHandValueNew PROC USES ESI EDX
 	EndOfProc:
 	MOV EAX, total
 
+	.IF(aceCount > 0)
+		mov handType, 'S'
+	.ENDIF
+
 	RET
 GetHandValueNew ENDP
 
+;--------------------------------------------------------------------
+;Displays the dealers cards
 showdealerHand PROC
 	pushad
 	mov edx, offset dealer.pname
@@ -353,8 +375,9 @@ loopen:
 showdealerHand ENDP
 
 
-
-
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: displays the players cards
 testHand PROC USES ESI EAX EDX
 	pushad
 	call crlf
@@ -384,6 +407,10 @@ endit:
 	RET
 testHand ENDP
 
+
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: displays the players split hand
 testSplitHand PROC 
 	pushad
 	call crlf
@@ -412,7 +439,8 @@ enditsplit:
 	RET
 testSplitHand ENDP
 
-
+;--------------------------------------------------------------------
+;displays the handbuffer
 PrintHandBuffer PROC USES ESI EAX EDX
 	MOV ESI, OFFSET HandBuffer
 	Top:
@@ -432,8 +460,9 @@ PrintHandBuffer PROC USES ESI EAX EDX
 	RET
 PrintHandBuffer ENDP
 
-
-;pass player number in eax split card moves to split array split and phand are dealt another card
+;--------------------------------------------------------------------
+;Input: player number in eax 
+;Output: Moves second card into the players split hand and deals a new card to the hand and split hand
 SplitHand PROC
 	pushad
 
@@ -487,7 +516,10 @@ SplitHand ENDP
 	a2 BYTE "dealer ", 0
 
 .code
-;pass the player number in EAX to compare to dealer hand
+
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: player wins hand if hand is better than dealer's pushes if equal to and loses if less
 compareHand PROC
 	pushad
 	push eax
@@ -512,7 +544,9 @@ compareHand PROC
 	RET
 compareHand ENDP
 
-;pass the player number in EAX to compare to dealer hand
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: player wins split hand if hand is better than dealer's pushes if equal to and loses if less
 compareSplitHand PROC
 	pushad
 	push eax
@@ -529,7 +563,7 @@ compareSplitHand PROC
 		call playerSplitPush
 	.ELSE
 		pop eax
-		call playerLose
+		call playerSplitLose
 	.ENDIF
 
 	popad
@@ -542,7 +576,10 @@ compareSplitHand ENDP
 	pushPrompt BYTE "You have pushed this hand", 0dh, 0ah, 0
 
 .code
-;pass winning player number in EAX
+
+;--------------------------------------------------------------------
+;Input:  winning player number in EAX
+;Output: players bank adds double the bet
 playerWin PROC USES EDX
 	call winbet
 	mov edx, offset winPrompt
@@ -551,13 +588,20 @@ playerWin PROC USES EDX
 	RET
 playerWin ENDP
 
+;--------------------------------------------------------------------
+;Input: losing player number in EAX
+;Output: bet is reset to 0
 playerLose PROC USES EDX
+	call losebet
 	mov edx, offset losePrompt
 	call writeString
 
 	RET
 playerLose ENDP
 
+;--------------------------------------------------------------------
+;Input: pushing player number in EAX
+;Output: players bank add bet back
 playerPush PROC USES EDX
 	call pushBet
 	mov edx, offset pushPrompt
@@ -566,7 +610,9 @@ playerPush PROC USES EDX
 	ret
 playerPush ENDP
 
-;pass winning player number in EAX
+;--------------------------------------------------------------------
+;Input:  winning player number in EAX
+;Output: players bank adds double the bet
 playerSplitWin PROC USES EDX
 	call winSplitbet
 	mov edx, offset winPrompt
@@ -575,6 +621,20 @@ playerSplitWin PROC USES EDX
 	RET
 playerSplitWin ENDP
 
+;--------------------------------------------------------------------
+;Input: losing player number in EAX
+;Output: bet is reset to 0
+playerSplitLose PROC USES EDX
+	call loseSplitbet
+	mov edx, offset losePrompt
+	call writeString
+
+	RET
+playerSplitLose ENDP
+
+;--------------------------------------------------------------------
+;Input: pushing player number in EAX
+;Output: players bank add bet back
 playerSplitPush PROC USES EDX
 	call pushSplitBet
 	mov edx, offset pushPrompt
@@ -583,6 +643,9 @@ playerSplitPush PROC USES EDX
 	ret
 playerSplitPush ENDP
 
+;--------------------------------------------------------------------
+;Input: Player number in EAX
+;Output: bl=0 if player has not split and bl=1 if the player split
 checkSplit PROC USES EAX ESI
 	
 	mov eax, 0
@@ -599,6 +662,9 @@ checkSplit PROC USES EAX ESI
 	RET
 checkSplit ENDP
 
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: blank player hand
 resetPhand PROC
 pushad
 	
@@ -633,7 +699,9 @@ popad
 ret
 resetPhand ENDP
 
-
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: blank player split hand
 resetPsplit PROC
 pushad
 	
@@ -669,7 +737,8 @@ popad
 ret
 resetPsplit ENDP
 
-
+;--------------------------------------------------------------------
+;Output: blank dealer hand
 resetdealer PROC
 pushad
 	mov edx, 52
