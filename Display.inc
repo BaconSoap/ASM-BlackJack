@@ -9,6 +9,8 @@
 	BankDisplay			DB	"Balance: ", 0
 	CurrentValue		DB	"Hand Value: ", 0
 	SplitMsg				DB	"Split Hand: ", 0
+	currentPlayerBank DWORD ?
+	currentPlayerBet DWORD ?
 
 .code
 SetCurrentColor PROC USES EAX
@@ -42,6 +44,12 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 	CALL MoveCursor
 
 	PlayerLoop:
+		
+		MOV EAX, (PlayerStructure PTR PlayerArray[ESI]).BankAcc
+		mov currentPlayerBank, eax
+		MOV eax, (PlayerStructure PTR PlayerArray[ESI]).Bet
+		mov currentPlayerBet, eax
+			
 		CALL SetOtherColor
 		MOVZX EAX, CurrentPlayer
 		CMP ECX, EAX
@@ -50,6 +58,9 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 		JMP ShowPlayer
 
 		ShowPlayer:
+
+		.if( currentPlayerBank > 10  || currentPlayerBet != 0)
+
 		call checkSplit
 		.IF(IsSplitTurn==1)
 			CALL SetOtherColor
@@ -106,8 +117,13 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 				CALL WriteDec
 				CALL SetToBaseX
 				CALL ShowPlayerCards
+				
 			.ENDIF
+
 			POP EAX
+
+			.ENDIf
+			
 		;Tab over and reset Y value
 			ADD BaseX, 23
 			MOV AL, BaseX

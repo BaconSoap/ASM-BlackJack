@@ -1,5 +1,6 @@
 .data
-welcomeMsg BYTE "Welcome to the wonderful world of BlackJack!",0dh,0ah,0
+welcomeMsg BYTE "Welcome to the wonderful world of BlackJack!",0dh,0ah
+		BYTE "Each player starts with $300", 0dh, 0ah, 0
 SelectionMsg Byte "Please select one of the following",0dh,0ah
 			 BYTE "1. HIT ",0dh,0ah
 			 BYTE "2. STAND ",0dh,0ah
@@ -36,6 +37,7 @@ RunGame PROC
 	
 		MOV DealerBust, 0
 	;-------------------------------------------
+
 	
 	;Ask each player for an initial bet, loops as many times as necessary
 		MOV EAX, 1 

@@ -41,7 +41,7 @@ BufferSize COORD <160, 100>
 DealerScore DB "Dealer Had: ", 0
 
 PlayerArray PlayerStructure 5 DUP(<>)
-Dealer Playerstructure<"Dealer",,,,>
+Dealer Playerstructure<"Dealer",10, 300>
 hConsoleOut    DWORD ?
 
 
