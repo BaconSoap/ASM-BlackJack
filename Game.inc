@@ -261,13 +261,13 @@ choosemenu:
 			jmp endturn
 		.endif
 	.elseif playerchoice == 4
-	pop eax
+		pop eax
 		pushad
 		mov ebx, 0
 			mov bl, FCardVal
 			.if (bl == SCardval)
 				popad
-				call dumpregs
+				;call dumpregs
 				Call splithand
 			.else
 				popad
@@ -289,8 +289,9 @@ choosemenu:
 		pop eax
 		exit
 	.else
-		call dumpregs
-		JMP choosemenu
+		;call dumpregs
+		pop eax
+		JMP turnloop
 
 	.endif	
 
@@ -304,6 +305,7 @@ choosemenu:
 	Busted:
 		MOV EDX, OFFSET Bustedmsg
 		call writestring
+		call waitmsg
 		INC NumberOfBust
 		pop eax
 	endturn:
