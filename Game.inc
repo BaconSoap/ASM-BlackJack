@@ -316,50 +316,43 @@ PUSHAD
 					pop eax
 					JMP turnloopsplit
 				.endif	
-
 			PUSH eax
 			CALL getplayerSplithand
 			CALL gethandvaluenew
 			cmp eax, 21
-			JG BustedSplit
+			JG BustedSplit	
 			pop eax
 			JMP turnloopSplit
-		BustedSplit:
+			BustedSplit:
 			MOV EDX, OFFSET Bustedmsg
 			CALL writestring
 			pop eax
-		endturnSplit:
-	
+			endturnSplit:
 		.ENDIF
-
 popad
 ret
 PlayerTurn ENDP
 
-;--------------------------------------------------------------------
 ;Output: deal hits if under 17 and stands if 17 or greater
 Dealerturn PROC
-PUSHad
-
+PUSHAD
 	CALL getdealerhand
 	CALL gethandvaluenew
-		MOV DealerHandVal, al
-;	CALL writeint
-	
-	.while (DealerHandVal < 17)
-		CALL dealcard
-		MOVzx ebx, al
-		CALL addcarddealer
-		CALL getdealerhand
-		CALL gethandvaluenew
-		MOV DealerHandVal, al
-		CALL writeint
-	.endw
-	.if (AL > 21)
-		MOV EDX, offset DBustMsg
-		CALL writestring
-		MOV DealerBust, 1
-	.endif
+	MOV DealerHandVal, al
+		.while (DealerHandVal < 17) ; if under 17, user must hit
+			CALL dealcard
+			MOVzx ebx, al
+			CALL addcarddealer
+			CALL getdealerhand
+			CALL gethandvaluenew
+			MOV DealerHandVal, al
+			CALL writeint
+		.endw
+		.if (AL > 21)				; checks if dealer busted
+			MOV EDX, offset DBustMsg
+			CALL writestring
+			MOV DealerBust, 1
+		.endif
 popad
 ret
 dealerturn ENDP
