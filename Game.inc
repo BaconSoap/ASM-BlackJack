@@ -254,78 +254,71 @@ PUSHAD
 		.else						; invalid input, look at 
 			pop eax
 			JMP turnloop
-
 		.endif	
-
-			PUSH eax
-			CALL getplayerhand
-			CALL gethandvaluenew
-			cmp eax, 21
-			JG Busted
-			pop eax
-			JMP turnloop
-		Busted:
+	PUSH eax
+	CALL getplayerhand
+	CALL gethandvaluenew
+	cmp eax, 21	; if player hand is 21 or less send back to continue turn otherwise endturn because of bust
+	JG Busted
+	pop eax
+	JMP turnloop
+		Busted:	; player busted, shows message and increments number of busted for this hand
 			MOV EDX, OFFSET Bustedmsg
 			CALL writestring
 			CALL waitmsg
 			INC NumberOfBust
 			pop eax
 		endturn:
-
-
-		CALL checkSplit  
-
+	CALL checkSplit  ; takes turn for split hand if there exists one for player, identical functionality to normal player turn
 		.IF (bl == 1)
-		turnloopSplit:
-		MOV IsSplitTurn, 1
-		PUSH EAX
-		MOVzx eax, currentplayer
-		CALL DisplayAll
-
-		MOV EDX, offset selectionMsg
-		CALL WriteString
-		CALL Crlf
-		CALL readint
-
-		MOV playerchoice, al
-
-		.if playerchoice == 1
-			CALL DealCard
-			MOVzx ebx, al
-			pop eax
-			CALL addcardplayerSplit
-			;checkhand value, jump to end turn if over 21
-
-
-		.elseif playerchoice == 2
-			pop eax
-			JMP endturnSplit
-
-			;double down, only allows you to hit once
-		.elseif playerchoice == 3
-			pop eax
-			CALL doubleSplitbet
-			PUSH eax
-			CALL dealcard
-			MOVzx ebx, al
-			pop eax
-			CALL addcardplayerSplit
+			turnloopSplit:
+			MOV IsSplitTurn, 1
+			PUSH EAX
 			MOVzx eax, currentplayer
-			CALL testSplithand
-			jmp endturnSplit
-		.elseif playerchoice == 4
-			PUSH edx
-			MOV edx, offset nosplitmsg
-			CALL writestring
-			pop edx
-			jmp turnloopsplit
-		.elseif playerchoice == 5  ;rules
-			pop eax
-			CALL rules
-		.elseif playerchoice == 6  ;hint
-			pop eax
-			CALL hint
-		.endif	
+			CALL DisplayAll
+			MOV EDX, offset selectionMsg
+			CALL WriteString
+			CALL Crlf
+			CALL readint
+			MOV playerchoice, al
+				.if playerchoice == 1 ; hit
+					CALL DealCard
+					MOVzx ebx, al
+					pop eax
+					CALL addcardplayerSplit	
+				.elseif playerchoice == 2 ; stand
+					pop eax
+					JMP endturnSplit
+				.elseif playerchoice == 3	; double down, makes sure you can
+					pop eax
+					CALL doubleSplitbet
+					PUSH eax
+					CALL dealcard
+					MOVzx ebx, al
+					pop eax
+					CALL addcardplayerSplit
+					MOVzx eax, currentplayer
+					CALL testSplithand
+					jmp endturnSplit
+				.elseif playerchoice == 4	; split, makes sure you can
+					PUSH edx
+					MOV edx, offset nosplitmsg
+					CALL writestring
+					pop edx
+					jmp turnloopsplit
+				.elseif playerchoice == 5  ;rules
+					pop eax
+					CALL rules
+				.elseif playerchoice == 6  ;hint
+					pop eax
+					CALL hint
+				.elseif playerchoice == 7  ; exit game
+					pop eax
+					exit
+				.else						; invalid input, loop back
+					pop eax
+					JMP turnloopsplit
+				.endif	
 
 			PUSH eax
 			CALL getplayerSplithand
