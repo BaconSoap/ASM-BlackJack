@@ -44,7 +44,6 @@ RunGame PROC		; main block that holds critical CALLs and functions that run the 
 			MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc ; manipulate players bank
 				.IF EAX >= 10			; bet must be above 10
 					POP EAX
-					CALL setPlayerColor	; gets unique color
 					CALL PlaceBet		; places bet
 				.ELSE
 					POP EAX
