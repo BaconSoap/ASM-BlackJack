@@ -1,38 +1,30 @@
 .data
-;using to test
-;DealerHand DB 1,3, 51, 52
-DEALERCARDCOUNT DB 2
-total Dword ?
-aceCount DWord ?
-handType BYTE 'H'
-
-
+DEALERCARDCOUNT DB 2	; dealer has initial 2 cards
+total Dword ?			; total of hand value in being looked at
+aceCount DWord ?		; holds amount of aces in current hand
+handType BYTE 'H'		; hold type of hand
+a1 BYTE "player ",0
+a2 BYTE "dealer ", 0
+winPrompt BYTE "You have won this hand", 0dh, 0ah, 0
+losePrompt BYTE "You have lost this hand", 0dh, 0ah, 0
+pushPrompt BYTE "You have pushed this hand", 0dh, 0ah, 0
 .code
-
-;--------------------------------------------------------------------
-;Output: dealer hand into HandBuffer
+;Output: stores dealer hand in the handbuffer
 GetDealerHand PROC USES EAX ESI EDI ECX
-	
-;	MOVZX ECX, Dealer.CardCount
-	;mov ecx, 3
 	MOV ESI, OFFSET Dealer.Phand
-	;mov esi, offset dealerhand
 	MOV EDI, OFFSET HandBuffer
-StartCopy:
+	StartCopy:
 		MOV EAX, [ESI]
 		MOV [EDI], EAX
-
 		INC ECX
 		INC ESI
 		INC EDI
-
 		CMP ECX, HAND_SIZE
 		JNE StartCopy
 RET
 GetDealerHand ENDP
 
-;--------------------------------------------------------------------
-;Output: HandBuffer copied into the dealer hand
+;Output: stores handbuffer into dealer hand
 SetDealerHand PROC USES EAX ESI EDI ECX EBX
 	MOV ECX, 0
 	MOV EBX, 0 
@@ -41,54 +33,43 @@ SetDealerHand PROC USES EAX ESI EDI ECX EBX
 	StartCopy:
 	MOV EAX, [ESI]
 	MOV [EDI], EAX
-
 	INC ECX
 	INC ESI
 	INC EDI
 	INC EBX
 	CMP ECX, HAND_SIZE
 	JNE StartCopy
-	;MOV Dealer.CardCount, bl
 	RET
 SetDealerHand ENDP
 
-;--------------------------------------------------------------------
 ;Input: player number in EAX
-;Output: player hand copied into handbuffer
+;Output: stores current player hand into handbuffer
 getPlayerHand PROC USES ECX ESI EDI EAX EBX
 	mov ecx, 0
 	mov edi, offset handBuffer
 	mov esi, 0
 	mov ebx, 0
 	push eax	
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
+	.while (eax > 1)	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
 		add ebx, TYPE Playerstructure
 		dec eax
 	.endw
-	lea esi, (Playerstructure PTR playerarray[ebx]).Phand 
+	lea esi, (Playerstructure PTR playerarray[ebx]).Phand ; had to use lea instead of offset to manipulate hand
 	pop eax
-
-	
 	getHand:
 	push eax
-
-	copyGet:
+	copyGet:	;copies player hand to handbuffer
 	MOV al, [ESI]
 	MOV [EDI], al
-
 	INC ECX
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
 	JNE copyGet
-
 	pop eax
-		
-	RET
+RET
 getPlayerHand ENDP
 
-;--------------------------------------------------------------------
 ;Input: player number in EAX
 ;Output: players split hand copied into handbuffer
 getPlayerSplitHand PROC USES ECX ESI EDI EAX EBX
@@ -97,34 +78,26 @@ getPlayerSplitHand PROC USES ECX ESI EDI EAX EBX
 	mov esi, 0
 	mov ebx, 0
 	push eax	
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
+	.while (eax > 1)	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
 		add ebx, TYPE Playerstructure
 		dec eax
 	.endw
 	lea esi, (Playerstructure PTR playerarray[ebx]).SplitHand
 	pop eax
-
-	
 	getSplitHand:
 	push eax
-
 	copySplitGet:
 	MOV al, [ESI]
 	MOV [EDI], al
-
 	INC ECX
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
 	JNE copySplitGet
-
 	pop eax
-		
-	RET
+RET
 getPlayerSplitHand ENDP
 
-;--------------------------------------------------------------------
 ;Input: pass player number in EAX
 ;Output: handbuffer copied into players hand
 setPlayerHand PROC USES ECX EDI ESI EAX EBX
@@ -133,34 +106,26 @@ setPlayerHand PROC USES ECX EDI ESI EAX EBX
 	mov esi, 0
 	mov ebx, 0
 	push eax	
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
+	.while (eax > 1)	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
 		add ebx, TYPE Playerstructure
 		dec eax
 	.endw
 	lea esi, (Playerstructure PTR playerarray[ebx]).Phand 
 	pop eax
-
-	
 	SetHand:
 	push eax
-
 	copySet:
 	MOV al, [EDI]
 	MOV [ESI], al
-
 	INC ECX
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
 	JNE copySet
-
 	pop eax
-		
-	RET
+RET
 setPlayerHand ENDP
 
-;--------------------------------------------------------------------
 ;Input: pass player number in EAX
 ;Output: handbuffer copied into players split hand
 setPlayerSplitHand PROC USES ECX EDI ESI EAX EBX
@@ -169,277 +134,215 @@ setPlayerSplitHand PROC USES ECX EDI ESI EAX EBX
 	mov esi, 0
 	mov ebx, 0
 	push eax	
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
+	.while (eax > 1)	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
 		add ebx, TYPE Playerstructure
 		dec eax
 	.endw
 	lea esi, (Playerstructure PTR playerarray[ebx]).SplitHand
 	pop eax
-
-	
 	SetSplitHand:
 	push eax
-
 	copySplitSet:
 	MOV al, [EDI]
 	MOV [ESI], al
-
 	INC ECX
 	INC ESI
 	INC EDI
 	CMP ECX, HAND_SIZE
 	JNE copySplitSet
-
 	pop eax
-		
-	RET
+RET
 setPlayerSplitHand ENDP
 
-;--------------------------------------------------------------------
 ;Input: player number in EAX and card to add in EBX
 ;Output: adds card to players hand
 addCardPlayer PROC USES ECX ESI EAX
 	call getPlayerHand
 	mov esi, offset handbuffer
-
-one:
-
-	mov cl, [esi]
-	cmp cl, 52
-	JE endadd
-	inc esi
-	jmp one
-
-endadd:
+		one:		; find first empy space in hand
+			mov cl, [esi]
+			cmp cl, 52
+			JE endadd
+			inc esi
+		jmp one
+	endadd:		; add card to hand
 	mov [esi], bl
-	call setPlayerHand
-
+	call setPlayerHand	; set players hand to new hand
 	mov esi, 0
-			;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add esi, TYPE Playerstructure
-		dec eax
-	.endw
-		
+		.while (eax > 1);this will add the type of playerstructure to esi, making it go to the corresponding player in the array
+			add esi, TYPE Playerstructure
+			dec eax
+		.endw
 	inc (Playerstructure PTR playerarray[esi]).cardCount
-
-
-	RET
+RET
 addCardPlayer ENDP
 
-;--------------------------------------------------------------------
 ;Input: player number in EAX and card to add in EBX
 ;Output: adds card to a players split hand
 addCardPlayerSplit PROC USES ECX ESI EAX
 	call getPlayerSplitHand
 	mov esi, offset handbuffer
-
-one:
-
-	mov cl, [esi]
-	cmp cl, 52
-	JE endadd
-	inc esi
-	jmp one
-
-endadd:
+		one:	; find first empty space in split hand 
+			mov cl, [esi]
+			cmp cl, 52
+			JE endadd
+			inc esi
+		jmp one
+	endadd:		; adds card to split hand
 	mov [esi], bl
-	call setPlayerSplitHand
-
-	RET
+	call setPlayerSplitHand ; set players split hand to new split hand
+RET
 addCardPlayerSplit ENDP
 
-;--------------------------------------------------------------------
 ;Input: card to add in EBX
-;Output: adds a card to the deals hand
+;Output: adds a card to the dealers hand
 addCardDealer PROC USES ECX ESI EAX
 	call getDealerHand
 	mov esi, offset handbuffer
-
-one:
-	mov cl, [esi]
-	cmp cl, 52
-	JE endadd
+		one:	; find first empty space in split hand 
+			mov cl, [esi]
+			cmp cl, 52
+		JE endadd
 	inc esi
 	jmp one
-endadd:
+	endadd:		; adds card to dealers hand
 	mov [esi], bl
 	call setDealerHand
-
 	inc dealer.cardCount
-
-	RET
+RET
 addCardDealer ENDP
 
-
-;--------------------------------------------------------------------
 ;Takes handbuffer and returns score for it
 ;Output: player's hand value in EAX
 GetHandValueNew PROC USES ESI EDX
-
 	mov al, 'H'
 	mov handType, al
-	
-	;CALL getPlayerHand
 	MOV ESI, OFFSET HandBuffer
-	MOV total, 0
-	MOV aceCount, 0
+	MOV total, 0	; total hand value
+	MOV aceCount, 0	; how many aces in hand
 	MOV EDX, 0
-	
-	StartFirstLoop:
-		inc edx
-		MOV EAX, 0
-		MOV AL, [ESI]
-		CMP EAX, 52
-
-		JE StartAceLoop
-		CALL getCardNumber
-		;moves values to fcardval and scardval in order to see if you can split
-			.if (EDX == 1)
-				mov FCardVal, AL
-			.elseif (EDX == 2)
-				mov SCardVal, AL
-			.endif
-
-		CMP EAX, 0
-		JE IHateAces
-
-		CMP EAX, 10
-		JGE ClampToTen
-		INC EAX
-		JMP AddToTotal
-		IHateAces:
-			INC aceCount
-			MOV EAX, 11
+		StartFirstLoop:
+			inc edx
+			MOV EAX, 0
+			MOV AL, [ESI]
+			CMP EAX, 52
+			JE StartAceLoop	; if end of cards in hand go to ace loop
+			CALL getCardNumber
+				.if (EDX == 1);moves values to fcardval and scardval in order to see if you can split
+					mov FCardVal, AL
+				.elseif (EDX == 2)
+					mov SCardVal, AL
+				.endif
+			CMP EAX, 0	; if current card is an ace
+			JE IHateAces
+			CMP EAX, 10	; if current card is a 10 J Q K
+			JGE ClampToTen
+			INC EAX
 			JMP AddToTotal
-
-		ClampToTen:
-			MOV EAX, 10
-			JMP AddToTotal
-
-		AddToTotal:
-			ADD total, EAX
-			INC ESI
-			JMP StartFirstLoop
-
-	StartAceLoop:
-		CMP aceCount, 0
-		JLE EndOfProc
-		;IF Total > 21 Subtract 10 from total
-		CMP total, 21
-		JG SubtractTen
-		JMP EndOfProc
-		SubtractTen:
-		SUB total, 10
-		DEC aceCount
+			IHateAces:	; adds 11, high ace value
+				INC aceCount
+				MOV EAX, 11
+				JMP AddToTotal
+			ClampToTen:	; adds 10, 10 or face card 
+				MOV EAX, 10
+				JMP AddToTotal
+			AddToTotal:	; adds value to total and loops for hand
+				ADD total, EAX
+				INC ESI
+		JMP StartFirstLoop
+		StartAceLoop:	; run this loop for number of aces handles ace value depending on if you would bust
+			CMP aceCount, 0
+			JLE EndOfProc
+			CMP total, 21	;IF Total > 21 Subtract 10 from total
+			JG SubtractTen
+			JMP EndOfProc
+			SubtractTen:
+			SUB total, 10
+			DEC aceCount
 		JMP StartAceLoop
-		
 	EndOfProc:
 	MOV EAX, total
-
-	.IF(aceCount > 0)
-		mov handType, 'S'
-	.ENDIF
-
-	RET
+		.IF(aceCount > 0)
+			mov handType, 'S'
+		.ENDIF
+RET
 GetHandValueNew ENDP
 
-;--------------------------------------------------------------------
 ;Displays the dealers cards
 showdealerHand PROC
-	pushad
+pushad
 	mov edx, offset dealer.pname
 	call writestring
 	call crlf
 	call getdealerhand
 	mov esi, offset handBuffer
-
-loopen:
-	mov eax, 0
-	mov al, [esi]
-	cmp al, 52
-	JE endstuff
-	call getcarddisplay
-	mov edx, offset carddisplaystring
-	call writestring
-	call crlf
-	inc esi
-
-	jmp loopen
-
+		loopen:
+			mov eax, 0
+			mov al, [esi]
+			cmp al, 52
+			JE endstuff
+			call getcarddisplay
+			mov edx, offset carddisplaystring
+			call writestring
+			call crlf
+			inc esi
+		jmp loopen
 	endstuff:
-
-	popad
-	RET
+popad
+RET
 showdealerHand ENDP
 
-
-;--------------------------------------------------------------------
 ;Input: player number in EAX
 ;Output: displays the players cards
 testHand PROC USES ESI EAX EDX
-	pushad
+pushad
 	call crlf
 	call getplayerhand
 	mov esi, offset handBuffer
 	call crlf
 	call crlf
-testit:
-	mov eax, 0
-	mov al, [esi]
-	cmp al, 52
-	JE endit
-	call getcarddisplay
-	mov edx, offset carddisplaystring
-	call writestring
-	call crlf
-	;add esi, 4
-	inc esi
-	;call dumpregs
-
+		testit:
+		mov eax, 0
+		mov al, [esi]
+		cmp al, 52
+		JE endit
+		call getcarddisplay
+		mov edx, offset carddisplaystring
+		call writestring
+		call crlf
+		inc esi
 	jmp testit
-
-endit:
+	endit:
 	call checkSplit
-
-	popad
-	RET
+popad
+RET
 testHand ENDP
 
-
-;--------------------------------------------------------------------
 ;Input: player number in EAX
 ;Output: displays the players split hand
 testSplitHand PROC 
-	pushad
+pushad
 	call crlf
 	call getplayerSplithand
 	mov esi, offset handBuffer
 	call crlf
 	call crlf
-testitsplit:
-	mov eax, 0
-	mov al, [esi]
-	cmp al, 52
-	JE enditsplit
-	call getcarddisplay
-	mov edx, offset carddisplaystring
-	call writestring
-	call crlf
-	;add esi, 4
-	inc esi
-	;call dumpregs
+	testitsplit:
+		mov eax, 0
+		mov al, [esi]
+		cmp al, 52
+		JE enditsplit
+		call getcarddisplay
+		mov edx, offset carddisplaystring
+		call writestring
+		call crlf
+		inc esi
 	jmp testitsplit
-
-
-enditsplit:
-
-	popad
-	RET
+	enditsplit:
+popad
+RET
 testSplitHand ENDP
 
-;--------------------------------------------------------------------
 ;displays the handbuffer
 PrintHandBuffer PROC USES ESI EAX EDX
 	MOV ESI, OFFSET HandBuffer
@@ -450,34 +353,28 @@ PrintHandBuffer PROC USES ESI EAX EDX
 		JGE EndLoop
 		CALL GetCardDisplay
 		MOV EDX, OFFSET CardDisplayString
-		
 		CALL WriteString
 		CALL CRLF
 		INC ESI
 		JMP Top
-
 	EndLoop:
-	RET
+RET
 PrintHandBuffer ENDP
 
-;--------------------------------------------------------------------
 ;Input: player number in eax 
 ;Output: Moves second card into the players split hand and deals a new card to the hand and split hand
 SplitHand PROC
-	pushad
-
+pushad
 	mov edx, 0
 	mov edi, offset handBuffer
 	mov esi, 0
 	mov ebx, 0
 	push eax	
-	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
-	.while (eax > 1)
-		add ebx, TYPE Playerstructure
-		dec eax
-	.endw
-
-	lea esi, (Playerstructure PTR playerarray[ebx]).bet
+		.while (eax > 1)	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+			add ebx, TYPE Playerstructure
+			dec eax
+		.endw
+	lea esi, (Playerstructure PTR playerarray[ebx]).bet	; takes inital bet and moves it into the splitbet and takes it out of bank account, sets split hand and sets split bool
 	mov al, [esi]
 	lea esi, (Playerstructure PTR playerarray[ebx]).splitbet
 	mov [esi], al
@@ -493,102 +390,76 @@ SplitHand PROC
 	lea esi, (Playerstructure PTR playerarray[ebx]).splitBool
 	mov al, 1
 	mov [esi], al
-
-
-	call dealcard
+	call dealcard	; deals new card to player after split
 	movzx ebx, al
 	pop eax
 	call addcardplayer
-
-
 	push eax
 	call dealcard
 	movzx ebx, al
 	pop eax
 	call addcardplayerSplit
-
-	popad
-	RET
+popad
+RET
 SplitHand ENDP
 
-.data
-	a1 BYTE "player ",0
-	a2 BYTE "dealer ", 0
-
-.code
-
-;--------------------------------------------------------------------
 ;Input: player number in EAX
 ;Output: player wins hand if hand is better than dealer's pushes if equal to and loses if less
 compareHand PROC
-	pushad
+pushad
 	push eax
 	call getplayerhand
 	call gethandvaluenew
 	mov bl, al
 	call getdealerhand
 	call gethandvaluenew
-	.IF(al<bl && bl<=21)
-		pop eax
-		call playerWin
-	.ELSEIF(al==bl)
-		pop eax
-		call playerPush
-	.ELSE
-		pop eax
-		call playerLose
-	.ENDIF
-
-
-	popad
-	RET
+		.IF(al<bl && bl<=21) ; hand value beats dealer
+			pop eax
+			call playerWin
+		.ELSEIF(al==bl)		; equal to dealer
+			pop eax
+			call playerPush
+		.ELSE				; anything else, player loses
+			pop eax
+			call playerLose
+		.ENDIF
+popad
+RET
 compareHand ENDP
 
-;--------------------------------------------------------------------
 ;Input: player number in EAX
 ;Output: player wins split hand if hand is better than dealer's pushes if equal to and loses if less
 compareSplitHand PROC
-	pushad
+pushad
 	push eax
 	call getplayerSplithand
 	call gethandvaluenew
 	mov bl, al
 	call getdealerhand
 	call gethandvaluenew
-	.IF(al<bl && bl<=21)
-		pop eax
-		call playerSplitWin
-	.ELSEIF(al==bl)
-		pop eax
-		call playerSplitPush
-	.ELSE
-		pop eax
-		call playerSplitLose
-	.ENDIF
-
-	popad
-	RET
+		.IF(al<bl && bl<=21)
+			pop eax
+			call playerSplitWin
+		.ELSEIF(al==bl)
+			pop eax
+			call playerSplitPush
+		.ELSE
+			pop eax
+			call playerSplitLose
+		.ENDIF
+popad
+RET
 compareSplitHand ENDP
 
-.data
-	winPrompt BYTE "You have won this hand", 0dh, 0ah, 0
-	losePrompt BYTE "You have lost this hand", 0dh, 0ah, 0
-	pushPrompt BYTE "You have pushed this hand", 0dh, 0ah, 0
-
-.code
-
-;--------------------------------------------------------------------
 ;Input:  winning player number in EAX
 ;Output: players bank adds double the bet
 playerWin PROC USES EDX
 	MOV CurrentPlayerMessage, 2
 	CALL SetPlayerMessage
 	call winbet
-	
 	mov edx, offset winPrompt
 	call writestring
-
-	RET
+RET
 playerWin ENDP
 
 ;--------------------------------------------------------------------
