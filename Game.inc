@@ -58,13 +58,11 @@ RunGame PROC
 			MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
 			.IF EAX >= 10
 				pop eax
-				call setPlayerColor
 				CALL placebet
 			.ELSE
 				pop eax
 			.ENDIF
 			INC EAX
-			call setDefaultTxtColor
 		Loop BettingLoop
 
 	;initial deal for dealer
@@ -145,7 +143,6 @@ RunGame PROC
 		mov EAX, 1
 		mov ecx, Playercount
 		compare:
-			call setPlayerColor
 			mov currentplayer, al
 			call compareHand
 			call checkSplit
@@ -153,7 +150,6 @@ RunGame PROC
 				call compareSplitHand
 			.ENDIF
 			inc eax
-			call setDefaultTxtColor
 		loop compare
 		jmp endround
 
@@ -308,11 +304,11 @@ choosemenu:
 		pop eax
 		JMP turnloop
 	Busted:
-		MOV EDX, OFFSET Bustedmsg
-		call writestring
-		call waitmsg
-		INC NumberOfBust
 		pop eax
+		MOV CurrentPlayerMessage, C_PLAYERBUST
+		CALL SetPlayerMessage
+		INC NumberOfBust
+		
 	endturn:
 
 

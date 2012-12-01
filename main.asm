@@ -58,7 +58,6 @@ main PROC
 
 		MOV EDX, offset welcomeMsg
 		Call WriteString
-		call setDefaultTxtColor
 		CALL NameInput
 		PUSH ECX
 		MOV ECX, PlayerCount

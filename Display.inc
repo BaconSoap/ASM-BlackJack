@@ -110,7 +110,10 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 			POP EAX
 			CALL SetToBaseX
 		;Show Message
+			PUSH EAX
+			MOV EAX, ECX
 			CALL GetPlayerMessage
+			POP EAX
 			.IF		(CurrentPlayerMessage == C_PLAYERNOMESSAGE)
 				MOV EDX, OFFSET EmptyString
 			.ELSEIF (CurrentPlayerMessage == C_PLAYERBUST)

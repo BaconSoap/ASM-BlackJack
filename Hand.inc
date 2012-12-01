@@ -581,7 +581,10 @@ compareSplitHand ENDP
 ;Input:  winning player number in EAX
 ;Output: players bank adds double the bet
 playerWin PROC USES EDX
+	MOV CurrentPlayerMessage, 2
+	CALL SetPlayerMessage
 	call winbet
+	
 	mov edx, offset winPrompt
 	call writestring
 
@@ -592,6 +595,8 @@ playerWin ENDP
 ;Input: losing player number in EAX
 ;Output: bet is reset to 0
 playerLose PROC USES EDX
+	MOV CurrentPlayerMessage, 3
+	CALL SetPlayerMessage
 	call losebet
 	mov edx, offset losePrompt
 	call writeString
