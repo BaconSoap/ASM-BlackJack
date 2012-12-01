@@ -8,10 +8,19 @@
 	BetDisplay			DB	"Bet: ", 0
 	BankDisplay			DB	"Balance: ", 0
 	CurrentValue		DB	"Hand Value: ", 0
-	SplitMsg				DB	"Split Hand: ", 0
-	currentPlayerBank DWORD ?
-	currentPlayerBet DWORD ?
-
+	SplitMsg			DB	"Split Hand: ", 0
+	currentPlayerBank	DD	?
+	currentPlayerBet	DD	?
+	;Message Codes
+	C_PLAYERNOMESSAGE	=	0
+	C_PLAYERBUST		=	1
+	C_PLAYERWIN			=	2
+	C_PLAYERLOSE		=	3
+	;Messages
+	PlayerMBust			DB	"You busted", 0
+	PlayerMWin			DB	"You won", 0
+	PlayerMLose			DB	"You lost", 0
+	CurrentPlayerMessage DB 0
 .code
 
 
@@ -98,7 +107,14 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 			CALL GetHandValueNew
 			CALL WriteDec
 			POP EAX
-		;ShowCards
+		;Show Message
+			CALL GetPlayerMessage
+			.IF		(CurrentPlayerMessage == C_PLAYERNOMESSAGE)
+			.ELSEIF (CurrentPlayerMessage == C_PLAYERBUST)
+			.ELSEIF (CurrentPlayerMessage == C_PLAYERWIN)
+			.ELSEIF (CurrentPlayerMessage == C_PLAYERLOSE)
+			.ENDIF
+		;Show Cards
 			CALL SetToBaseX
 			PUSH EAX
 			MOV EAX, ECX

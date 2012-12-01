@@ -28,6 +28,7 @@ Playerstructure STRUCT
 		splitBool DB 0
 		splitBet DWORD 0
 		ACTIVE	DD	1
+		Message	DB	0
 Playerstructure ends
 
 COORD STRUCT

@@ -400,3 +400,10 @@ pushSplitBet PROC USES ESI EAX EBX
 	MOV (Playerstructure PTR playerarray[esi]).Splitbet, 0
 	RET
 pushSplitBet ENDP
+
+;Takes in player number in EAX
+;Sets CurrentPlayerMessage to the player's message
+GetPlayerMessage PROC USES EAX
+	
+	RET
+GetPlayerMessage ENDP

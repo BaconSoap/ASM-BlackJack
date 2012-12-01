@@ -679,6 +679,7 @@ pushad
 			add ebx, TYPE Playerstructure
 			dec eax
 		.endw
+		MOV (Playerstructure PTR playerarray[ebx]).Message, 0
 		lea esi, (Playerstructure PTR playerarray[ebx]).Phand 
 		mov (Playerstructure PTR playerarray[ebx]).bet, 0
 		pop eax
