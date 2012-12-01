@@ -44,7 +44,9 @@
 
 .code
 
-;pass player number in EAX
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: message box with what a play should do
 hint PROC 
 	PushAD
 	
@@ -242,6 +244,8 @@ hint PROC
 	RET
 hint ENDP
 
+;--------------------------------------------------------------------
+;displays the rules 
 rules PROC USES EBX EDX
 	mov ebx, offset help
 	mov edx, offset rulesPrompt
@@ -250,6 +254,8 @@ rules PROC USES EBX EDX
 	RET
 rules ENDP
 
+;--------------------------------------------------------------------
+;displays a message box that the player should split
 splitHint PROC USES EBX EDX
 	mov ebx, offset hintPrompt
 	mov edx, offset splitPrompt
@@ -258,6 +264,8 @@ splitHint PROC USES EBX EDX
 	RET
 splitHint ENDP
 
+;--------------------------------------------------------------------
+;displays message box that a player should hit
 hitHint PROC USES EBX EDX
 	mov ebx, offset hintPrompt
 	mov edx, offset hitPrompt
@@ -266,6 +274,8 @@ hitHint PROC USES EBX EDX
 	RET
 hitHint ENDP
 
+;--------------------------------------------------------------------
+;displays a message box that the player should stand
 standHint PROC USES EBX EDX
 	mov ebx, offset hintPrompt
 	mov edx, offset standPrompt
@@ -274,6 +284,8 @@ standHint PROC USES EBX EDX
 	RET
 standHint ENDP
 
+;--------------------------------------------------------------------
+;displays a message box that a player should double down
 doubleDownHint PROC USES EBX EDX
 	mov ebx, offset hintPrompt
 	mov edx, offset doubleDownPrompt
@@ -288,6 +300,9 @@ doubleDownHint ENDP
 	dealercardprompt BYTE " and the dealer is showing a ", 0
 
 .code
+
+;--------------------------------------------------------------------
+;displays the player hand type and the dealers card
 handTypePrompt PROC
 	pushad
 	.IF handtype == 'H'

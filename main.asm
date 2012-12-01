@@ -83,6 +83,8 @@ main PROC
 exit
 main endp
 
+;--------------------------------------------------------------------
+;Sets all regs to 0
 ClearRegs PROC
 	
 	mov eax, 0

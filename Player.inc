@@ -321,7 +321,6 @@ winSplitBet ENDP
 loseBet PROC USES ESI EAX EBX
 	
 	mov esi, 0
-	push eax
 	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
 	.while (eax > 1)
 		add esi, TYPE Playerstructure
@@ -329,14 +328,38 @@ loseBet PROC USES ESI EAX EBX
 	.endw
 	;sets bet to 0
 	MOV (Playerstructure PTR playerarray[esi]).bet, 0
-	MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
-	CMP EAX, 10
-	JGE EndOfComp
-	DEC ActivePlayers
-	MOV (Playerstructure PTR playerarray[esi]).ACTIVE, 0
-	EndOfComp:
+	;MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
+	;CMP EAX, 10
+	;JGE EndOfComp
+	;DEC ActivePlayers
+	;MOV (Playerstructure PTR playerarray[esi]).ACTIVE, 0
+	;EndOfComp:
+
+
 	RET
 loseBet ENDP
+
+;--------------------------------------------------------------------
+;send the losing player number in EAX
+loseSplitBet PROC USES ESI EAX EBX
+	
+	mov esi, 0
+	;this will add the type of playerstructure to esi, making it go to the corresponding player in the array	
+	.while (eax > 1)
+		add esi, TYPE Playerstructure
+		dec eax
+	.endw
+	;sets bet to 0
+	MOV (Playerstructure PTR playerarray[esi]).splitbet, 0
+	;MOV EAX, (Playerstructure PTR playerarray[esi]).bankacc
+	;CMP EAX, 10
+	;JGE EndOfComp
+	;DEC ActivePlayers
+	;MOV (Playerstructure PTR playerarray[esi]).ACTIVE, 0
+	;EndOfComp:
+
+	RET
+loseSplitBet ENDP
 
 ;--------------------------------------------------------------------
 ;pass player number in EAX returns the bet to that player

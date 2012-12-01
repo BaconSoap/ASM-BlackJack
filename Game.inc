@@ -28,6 +28,8 @@ FCardVal BYTE 0
 SCardVal BYTE 0
 .code
 
+;--------------------------------------------------------------------
+;Runs the blackjack game
 RunGame PROC
 	;creates deck, shuffles deck asks for names
 
@@ -197,8 +199,9 @@ ret
 RunGame ENDP
 
 
-
-
+;--------------------------------------------------------------------
+;Input: player number in EAX
+;Output: input menu for player 
 PlayerTurn PROC USES EAX EDX ESI ECX
 pushad
 
@@ -386,7 +389,8 @@ popad
 ret
 PlayerTurn ENDP
 
-;dealers moves
+;--------------------------------------------------------------------
+;Output: deal hits if under 17 and stands if 17 or greater
 Dealerturn PROC
 pushad
 

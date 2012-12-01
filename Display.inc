@@ -13,6 +13,8 @@
 	currentPlayerBet DWORD ?
 
 .code
+
+
 SetCurrentColor PROC USES EAX
 	MOVZX EAX, CurrentPlayerColor
 	CALL SetTextColor
