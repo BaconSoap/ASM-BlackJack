@@ -163,4 +163,3 @@ pip-log.txt
 .DS_Store
 
 # Debug directory, regenerated after each build, but a source of unnecessary merge conflicts.
-Debug/
