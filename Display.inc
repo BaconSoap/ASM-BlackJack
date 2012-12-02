@@ -43,10 +43,11 @@ SetDealerColor PROC USES EAX
 	RET
 SetDealerColor ENDP
 
+;Display player, dealer, and hand information
 DisplayAll PROC USES EAX ECX ESI EDX EBX
 	CALL SetOtherColor
 	CALL ClrScr
-	;CURRENTPLAYER
+	
 	MOV ECX, 1
 	MOV ESI, 0
 	
@@ -55,8 +56,10 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 	MOV BaseX, 0
 	CALL MoveCursor
 
+	;Display each player and their hand in turn
 	PlayerLoop:
 		
+		;Extract relevant values of the player
 		MOV EAX, (PlayerStructure PTR PlayerArray[ESI]).BankAcc
 		mov currentPlayerBank, eax
 		MOV eax, (PlayerStructure PTR PlayerArray[ESI]).Bet
@@ -71,8 +74,8 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 
 		ShowPlayer:
 
-		.if( currentPlayerBank > 10  || currentPlayerBet != 0)
-
+		;Work only with players still in the game
+	.if( currentPlayerBank > 10  || currentPlayerBet != 0)
 		call checkSplit
 		.IF(IsSplitTurn==1)
 			CALL SetOtherColor
@@ -109,7 +112,7 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 			CALL WriteDec
 			POP EAX
 			CALL SetToBaseX
-		;Show Message
+		;Show the message of the player's status
 			PUSH EAX
 			MOV EAX, ECX
 			CALL GetPlayerMessage
@@ -132,6 +135,7 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 			CALL GetPlayerHand
 			CALL ShowPlayerCards
 			
+			;Show the split hand if it exists
 			.IF(bl==1)
 				.IF(IsSplitTurn==1)
 					CALL SetCurrentColor
@@ -174,6 +178,7 @@ DisplayAll PROC USES EAX ECX ESI EDX EBX
 	RET
 DisplayAll ENDP
 
+;Display the dealer's name and hand (only the first card until all players have finished their turns)
 DisplayDealer PROC USES EDX ESI EAX 
 	CALL SetDealerColor
 
@@ -202,8 +207,8 @@ DisplayDealer PROC USES EDX ESI EAX
 	RET
 DisplayDealer ENDP
 
+;Shows the current player's cards from the hand buffer
 ShowPlayerCards PROC USES EAX ECX ESI EDX
-
 	mov esi, offset handBuffer
 
 	testit:
@@ -227,10 +232,7 @@ endit:
 	RET
 ShowPlayerCards ENDP
 
-ShowDealerCards PROC
-
-ShowDealerCards ENDP
-
+;Custom CrLf, makes a new line and returns to the x-coordinate of the column's start
 SetToBaseX PROC USES EAX
 	INC CursorY
 	MOV AL, BaseX
@@ -239,6 +241,7 @@ SetToBaseX PROC USES EAX
 	RET
 SetToBaseX ENDP
 
+;Move the cursor to CursorY,CursorX
 MoveCursor PROC USES EDX
 	MOV DH, CursorY
 	MOV DL, CursorX
